@@ -1,5 +1,6 @@
 asgiref==3.10.0
 Django==5.2.8
+django-admin-shell==2.0.1
 django-cors-headers==4.9.0
 djangorestframework==3.16.1
 gunicorn==23.0.0
