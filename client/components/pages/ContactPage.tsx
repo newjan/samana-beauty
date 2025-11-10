@@ -1,23 +1,26 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
+import { SiFacebook, SiInstagram } from "react-icons/si";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
+    name: "",
+    email: "",
+    message: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission
-    alert('Thank you for your message! We will get back to you soon.');
-    setFormData({ name: '', email: '', message: '' });
+    alert("Thank you for your message! We will get back to you soon.");
+    setFormData({ name: "", email: "", message: "" });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
@@ -28,7 +31,10 @@ export default function ContactPage() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-16 text-center">
           <h2 className="mb-4 text-5xl font-bold text-gray-800 md:text-6xl">
-            Contact <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Us</span>
+            Contact{" "}
+            <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+              Us
+            </span>
           </h2>
           <p className="text-xl text-gray-600">
             Get in touch with us - we'd love to hear from you!
@@ -40,17 +46,22 @@ export default function ContactPage() {
           {/* Contact Information */}
           <div className="space-y-6">
             <div className="rounded-2xl bg-white p-8 shadow-lg">
-              <h3 className="mb-6 text-3xl font-bold text-gray-800">Visit Us</h3>
-              
+              <h3 className="mb-6 text-3xl font-bold text-gray-800">
+                Visit Us
+              </h3>
+
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white">
                     <span className="text-2xl">📍</span>
                   </div>
                   <div>
-                    <h4 className="mb-1 font-semibold text-gray-800">Address</h4>
+                    <h4 className="mb-1 font-semibold text-gray-800">
+                      Address
+                    </h4>
                     <p className="text-gray-600">
-                      Suryabinayak, Pandubazar<br />
+                      Suryabinayak, Pandubazar
+                      <br />
                       Bhaktapur, Nepal
                     </p>
                   </div>
@@ -62,7 +73,10 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="mb-1 font-semibold text-gray-800">Phone</h4>
-                    <a href="tel:+9779851277936" className="text-pink-600 hover:text-pink-700">
+                    <a
+                      href="tel:+9779851277936"
+                      className="text-pink-600 hover:text-pink-700"
+                    >
                       (977) 9851277936
                     </a>
                   </div>
@@ -74,7 +88,10 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="mb-1 font-semibold text-gray-800">Email</h4>
-                    <a href="mailto:samanabeautygallery@gmail.com" className="text-pink-600 hover:text-pink-700">
+                    <a
+                      href="mailto:samanabeautygallery@gmail.com"
+                      className="text-pink-600 hover:text-pink-700"
+                    >
                       samanabeautygallery@gmail.com
                     </a>
                   </div>
@@ -87,7 +104,8 @@ export default function ContactPage() {
                   <div>
                     <h4 className="mb-1 font-semibold text-gray-800">Hours</h4>
                     <p className="text-gray-600">
-                      Monday - Saturday: 9:00 AM - 7:30 PM<br />
+                      Monday - Saturday: 9:00 AM - 7:30 PM
+                      <br />
                       Sunday: 11:00 AM - 7:30 PM
                     </p>
                   </div>
@@ -99,14 +117,23 @@ export default function ContactPage() {
             <div className="rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 p-8 text-white">
               <h3 className="mb-4 text-2xl font-bold">Follow Us</h3>
               <div className="flex space-x-4">
-                {['📘', '📷', '🐦', '💼'].map((icon, index) => (
-                  <button
-                    key={index}
-                    className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-2xl transition-all duration-300 hover:scale-110 hover:bg-white/30"
-                  >
-                    {icon}
-                  </button>
-                ))}
+                <a
+                  href="https://facebook.com/yourpage"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-12 w-12 items-center justify-center rounded-full bg-white/80 text-blue-600 transition-all duration-300 hover:scale-110 hover:bg-blue-600 hover:text-white"
+                >
+                  <SiFacebook className="h-6 w-6" />
+                </a>
+
+                <a
+                  href="https://instagram.com/yourpage"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-12 w-12 items-center justify-center rounded-full bg-white/80 text-pink-500 transition-all duration-300 hover:scale-110 hover:bg-pink-500 hover:text-white"
+                >
+                  <SiInstagram className="h-6 w-6" />
+                </a>
               </div>
             </div>
           </div>
@@ -133,10 +160,15 @@ export default function ContactPage() {
 
             {/* Contact Form */}
             <div className="rounded-2xl bg-white p-8 shadow-lg">
-              <h3 className="mb-6 text-3xl font-bold text-gray-800">Send us a Message</h3>
+              <h3 className="mb-6 text-3xl font-bold text-gray-800">
+                Send us a Message
+              </h3>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="name"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                  >
                     Name
                   </label>
                   <input
@@ -151,7 +183,10 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="email"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                  >
                     Email
                   </label>
                   <input
@@ -166,7 +201,10 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="mb-2 block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="message"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                  >
                     Message
                   </label>
                   <textarea
@@ -194,4 +232,3 @@ export default function ContactPage() {
     </section>
   );
 }
-
