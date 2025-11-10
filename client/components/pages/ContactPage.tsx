@@ -118,7 +118,7 @@ export default function ContactPage() {
               <h3 className="mb-4 text-2xl font-bold">Follow Us</h3>
               <div className="flex space-x-4">
                 <a
-                  href="https://facebook.com/yourpage"
+                  href="https://facebook.com/makeoverbysamana"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex h-12 w-12 items-center justify-center rounded-full bg-white/80 text-blue-600 transition-all duration-300 hover:scale-110 hover:bg-blue-600 hover:text-white"
@@ -127,7 +127,7 @@ export default function ContactPage() {
                 </a>
 
                 <a
-                  href="https://instagram.com/yourpage"
+                  href="https://instagram.com/samanathebeautygallery"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex h-12 w-12 items-center justify-center rounded-full bg-white/80 text-pink-500 transition-all duration-300 hover:scale-110 hover:bg-pink-500 hover:text-white"
