@@ -35,7 +35,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="mb-2 flex items-center justify-between">
           <h3 className="text-xl font-bold text-gray-800">{product.name}</h3>
           <span className="text-lg font-semibold text-pink-600">
-            ${product.price}
+            Rs.{product.price}
           </span>
         </div>
         {product.category && (
