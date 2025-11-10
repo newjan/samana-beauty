@@ -27,6 +27,7 @@ export default function BookingForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [focusedField, setFocusedField] = useState<string>('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -64,75 +65,109 @@ export default function BookingForm() {
       <h2 className="mb-6 text-3xl font-bold text-gray-800">Book Your Appointment</h2>
       
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div>
-          <label htmlFor="customer_name" className="mb-2 block text-sm font-medium text-gray-700">
-            Full Name *
-          </label>
+        <div className="relative">
           <input
             type="text"
             id="customer_name"
             name="customer_name"
             value={formData.customer_name}
             onChange={handleChange}
+            onFocus={() => setFocusedField('customer_name')}
+            onBlur={() => setFocusedField('')}
             required
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="peer w-full rounded-lg border border-gray-300 px-4 pt-6 pb-2 text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            placeholder=" "
           />
+          <label
+            htmlFor="customer_name"
+            className="absolute left-4 top-4 text-gray-500 transition-all duration-200 peer-focus:top-2 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
+          >
+            Full Name 
+          </label>
         </div>
 
-        <div>
-          <label htmlFor="customer_email" className="mb-2 block text-sm font-medium text-gray-700">
-            Email *
-          </label>
+        <div className="relative">
           <input
             type="email"
             id="customer_email"
             name="customer_email"
             value={formData.customer_email}
             onChange={handleChange}
+            onFocus={() => setFocusedField('customer_email')}
+            onBlur={() => setFocusedField('')}
             required
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="peer w-full rounded-lg border border-gray-300 px-4 pt-6 pb-2 text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            placeholder=" "
           />
+          <label
+            htmlFor="customer_email"
+            className="absolute left-4 top-4 text-gray-500 transition-all duration-200 peer-focus:top-2 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
+          >
+            Email 
+          </label>
         </div>
 
-        <div>
-          <label htmlFor="customer_phone" className="mb-2 block text-sm font-medium text-gray-700">
-            Phone Number *
-          </label>
+        <div className="relative">
           <input
             type="tel"
             id="customer_phone"
             name="customer_phone"
             value={formData.customer_phone}
             onChange={handleChange}
+            onFocus={() => setFocusedField('customer_phone')}
+            onBlur={() => setFocusedField('')}
             required
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="peer w-full rounded-lg border border-gray-300 px-4 pt-6 pb-2 text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            placeholder=" "
           />
+          <label
+            htmlFor="customer_phone"
+            className="absolute left-4 top-4 text-gray-500 transition-all duration-200 peer-focus:top-2 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
+          >
+            Phone Number 
+          </label>
         </div>
 
-        <div>
-          <label htmlFor="service_type" className="mb-2 block text-sm font-medium text-gray-700">
-            Service Type *
-          </label>
+        <div className="relative">
           <select
             id="service_type"
             name="service_type"
             value={formData.service_type}
             onChange={handleChange}
+            onFocus={() => setFocusedField('service_type')}
+            onBlur={() => setFocusedField('')}
             required
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="peer w-full rounded-lg border border-gray-300 px-4 pt-6 pb-2 text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
           >
-            <option value="">Select a service</option>
+            <option value=""></option>
             {SERVICE_TYPES.map(service => (
               <option key={service} value={service}>
                 {service}
               </option>
             ))}
           </select>
+          <label
+            htmlFor="service_type"
+            className={`absolute left-4 transition-all duration-200 ${
+              formData.service_type || focusedField === 'service_type'
+                ? 'top-2 text-xs text-pink-500'
+                : 'top-4 text-gray-500'
+            }`}
+          >
+            Service Type 
+          </label>
         </div>
 
-        <div>
-          <label htmlFor="appointment_date" className="mb-2 block text-sm font-medium text-gray-700">
-            Date *
+        <div className="relative">
+          <label
+            htmlFor="appointment_date"
+            className={`absolute left-4 top-2 text-xs pointer-events-none z-10 transition-colors duration-200 ${
+              formData.appointment_date || focusedField === 'appointment_date'
+                ? 'text-pink-500'
+                : 'text-gray-500'
+            }`}
+          >
+            Date 
           </label>
           <input
             type="date"
@@ -140,15 +175,24 @@ export default function BookingForm() {
             name="appointment_date"
             value={formData.appointment_date}
             onChange={handleChange}
+            onFocus={() => setFocusedField('appointment_date')}
+            onBlur={() => setFocusedField('')}
             required
             min={new Date().toISOString().split('T')[0]}
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="w-full rounded-lg border border-gray-300 px-4 pt-6 pb-2 text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
           />
         </div>
 
-        <div>
-          <label htmlFor="appointment_time" className="mb-2 block text-sm font-medium text-gray-700">
-            Time *
+        <div className="relative">
+          <label
+            htmlFor="appointment_time"
+            className={`absolute left-4 top-2 text-xs pointer-events-none z-10 transition-colors duration-200 ${
+              formData.appointment_time || focusedField === 'appointment_time'
+                ? 'text-pink-500'
+                : 'text-gray-500'
+            }`}
+          >
+            Time 
           </label>
           <input
             type="time"
@@ -156,25 +200,32 @@ export default function BookingForm() {
             name="appointment_time"
             value={formData.appointment_time}
             onChange={handleChange}
+            onFocus={() => setFocusedField('appointment_time')}
+            onBlur={() => setFocusedField('')}
             required
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="w-full rounded-lg border border-gray-300 px-4 pt-6 pb-2 text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
           />
         </div>
       </div>
 
-      <div>
-        <label htmlFor="notes" className="mb-2 block text-sm font-medium text-gray-700">
-          Additional Notes
-        </label>
+      <div className="relative">
         <textarea
           id="notes"
           name="notes"
           value={formData.notes}
           onChange={handleChange}
+          onFocus={() => setFocusedField('notes')}
+          onBlur={() => setFocusedField('')}
           rows={4}
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
-          placeholder="Any special requests or notes..."
+          className="peer w-full rounded-lg border border-gray-300 px-4 pt-6 pb-2 text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+          placeholder=" "
         />
+        <label
+          htmlFor="notes"
+          className="absolute left-4 top-4 text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-2 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
+        >
+          Additional Notes
+        </label>
       </div>
 
       {submitStatus === 'success' && (
@@ -199,4 +250,3 @@ export default function BookingForm() {
     </form>
   );
 }
-

@@ -7,7 +7,7 @@ export default function AppointmentPage() {
     <section className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 px-4 py-20 md:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 text-center">
-          <h2 className="mb-4 text-5xl font-bold text-gray-800 md:text-6xl">
+          <h2 className="mb-4 text-5xl font-bold text-gray-900 md:text-6xl">
             Book Your <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Appointment</span>
           </h2>
           <p className="text-xl text-gray-600">
