@@ -241,10 +241,10 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
               </div>
               
               {/* Content */}
-              <div className="absolute inset-0 z-20 flex items-center pb-20">
-                <div className="mx-auto w-full max-w-7xl px-4 text-white">
+              <div className="absolute inset-0 z-20 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+                <div className="mx-auto w-full max-w-screen-xl text-white h-full flex items-center">
                   <div 
-                    className={`w-full max-w-4xl transition-all duration-1000 ${
+                    className={`w-full max-w-4xl transition-all duration-1000 scale-90 sm:scale-95 md:scale-100 pl-5 pb-10 pt-5 ${
                       index === currentIndex 
                         ? 'opacity-100 translate-y-0' 
                         : 'opacity-0 translate-y-10'
@@ -252,10 +252,10 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                   >
                     {/* Icon Badge */}
                     {index === 0 && (
-                      <div className="pt-20 mb-8 inline-block animate-fade-in">
-                        <div className="mb-6 inline-block rounded-full bg-gradient-to-r from-pink-500 to-purple-600 p-1 shadow-2xl">
-                          <div className="rounded-full bg-black/90 p-4 backdrop-blur-sm">
-                            <Image src="/samana-logo.png" alt="Samana Beauty Logo" width={80} height={80} className="rounded-full object-contain" priority />
+                      <div className="mb-3 sm:mb-2 md:mb-1.5 inline-block animate-fade-in">
+                        <div className="mb-3 sm:mb-2 inline-block rounded-full bg-gradient-to-r from-pink-500 to-purple-600 p-0.5 sm:p-1 shadow-2xl">
+                          <div className="rounded-full bg-black/90 p-2 sm:p-2 md:p-1.5 backdrop-blur-sm">
+                            <Image src="/samana-logo.png" alt="Samana Beauty Logo" width={36} height={36} className="rounded-full object-contain sm:w-11 sm:h-11 md:w-14 md:h-14 lg:w-16 lg:h-16" priority />
                           </div>
                         </div>
                       </div>
@@ -264,7 +264,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                     {/* Subtitle */}
                     {image.subtitle && (
                       <div 
-                        className={`mb-2 text-lg font-medium text-pink-300 transition-all duration-700 delay-100 ${
+                        className={`mb-2 sm:mb-3 text-sm sm:text-base md:text-lg font-medium text-pink-300 transition-all duration-700 delay-100 ${
                           index === currentIndex 
                             ? 'opacity-100 translate-x-0' 
                             : 'opacity-0 -translate-x-10'
@@ -277,7 +277,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                     {/* Main Title */}
                     {image.title && (
                       <h1 
-                        className={`mb-6 text-4xl font-bold md:text-6xl lg:text-7xl transition-all duration-700 delay-200 ${
+                        className={`mb-3 sm:mb-4 md:mb-5 text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight transition-all duration-700 delay-200 ${
                           index === currentIndex 
                             ? 'opacity-100 translate-y-0' 
                             : 'opacity-0 translate-y-10'
@@ -301,7 +301,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                     {/* Description */}
                     {image.description && (
                       <p 
-                        className={`mb-8 text-xl text-gray-200 md:text-2xl lg:text-3xl transition-all duration-700 delay-300 ${
+                        className={`mb-2 sm:mb-3 md:mb-4 text-sm sm:text-base md:text-lg lg:text-xl text-gray-200 transition-all duration-700 delay-300 ${
                           index === currentIndex 
                             ? 'opacity-100 translate-y-0' 
                             : 'opacity-0 translate-y-10'
@@ -314,7 +314,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                     {/* Additional text for first slide */}
                     {index === 0 && (
                       <p 
-                        className={`mb-8 max-w-2xl text-lg text-gray-300 transition-all duration-700 delay-400 ${
+                        className={`mb-4 sm:mb-5 md:mb-6 max-w-2xl text-sm sm:text-base md:text-lg text-gray-300 transition-all duration-700 delay-400 ${
                           index === currentIndex 
                             ? 'opacity-100 translate-y-0' 
                             : 'opacity-0 translate-y-10'
@@ -328,7 +328,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                     {/* CTA Buttons - Only show on first slide */}
                     {index === 0 && (
                       <div 
-                        className={`mb-8 flex flex-col gap-4 sm:flex-row sm:justify-start transition-all duration-700 delay-500 ${
+                        className={`mb-4 sm:mb-5 md:mb-6 flex flex-col gap-2 sm:gap-3 md:gap-4 sm:flex-row sm:justify-start transition-all duration-700 delay-500 ${
                           index === currentIndex 
                             ? 'opacity-100 translate-y-0' 
                             : 'opacity-0 translate-y-10'
@@ -336,14 +336,14 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                       >
                         <button
                           onClick={handleBookAppointment}
-                          className="group relative overflow-hidden rounded-full bg-gradient-to-r from-pink-500 to-purple-600 px-8 py-4 text-lg font-semibold text-white shadow-2xl transition-all duration-300 hover:scale-110 hover:shadow-pink-500/50"
+                          className="group relative overflow-hidden rounded-full bg-gradient-to-r from-pink-500 to-purple-600 px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base md:text-lg font-semibold text-white shadow-2xl transition-all duration-300 hover:scale-110 hover:shadow-pink-500/50 active:scale-95"
                         >
                           <span className="relative z-10">Book Your Appointment</span>
                           <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                         </button>
                         <button
                           onClick={handleExploreServices}
-                          className="rounded-full border-2 border-white/80 bg-white/10 backdrop-blur-sm px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-110 hover:bg-white/20 hover:shadow-lg"
+                          className="rounded-full border-2 border-white/80 bg-white/10 backdrop-blur-sm px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base md:text-lg font-semibold text-white transition-all duration-300 hover:scale-110 hover:bg-white/20 hover:shadow-lg active:scale-95"
                         >
                           Explore Our Services
                         </button>
@@ -353,7 +353,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                     {/* Feature Cards - Only on first slide */}
                     {index === 0 && (
                       <div 
-                        className={`mt-12 grid grid-cols-1 gap-6 md:grid-cols-3 w-full max-w-5xl mx-auto transition-all duration-700 delay-700 ${
+                        className={`mt-3 sm:mt-4 md:mt-5 grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 w-full max-w-5xl transition-all duration-700 delay-700 ${
                           index === currentIndex 
                             ? 'opacity-100 translate-y-0' 
                             : 'opacity-0 translate-y-10'
@@ -366,11 +366,11 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                         ].map((feature, idx) => (
                           <div
                             key={idx}
-                            className="group rounded-2xl bg-white/10 backdrop-blur-md p-6 shadow-lg border border-white/20 transition-all duration-300 hover:scale-105 hover:bg-white/20 hover:shadow-2xl overflow-hidden min-w-0"
+                            className="group rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md p-2.5 sm:p-3 md:p-4 shadow-lg border border-white/20 transition-all duration-300 hover:scale-105 hover:bg-white/20 hover:shadow-2xl overflow-hidden"
                           >
-                            <div className="mb-4 text-5xl transition-transform duration-300 group-hover:scale-110 flex-shrink-0">{feature.icon}</div>
-                            <h3 className="mb-2 text-xl font-bold text-white break-words whitespace-normal">{feature.title}</h3>
-                            <p className="text-gray-200 text-sm break-words leading-relaxed whitespace-normal">{feature.desc}</p>
+                            <div className="mb-1.5 sm:mb-2 text-2xl sm:text-3xl md:text-4xl transition-transform duration-300 group-hover:scale-110">{feature.icon}</div>
+                            <h3 className="mb-1 text-xs sm:text-sm md:text-base lg:text-lg font-bold text-white break-words">{feature.title}</h3>
+                            <p className="text-gray-200 text-[11px] sm:text-xs md:text-sm break-words leading-snug">{feature.desc}</p>
                           </div>
                         ))}
                       </div>
@@ -386,11 +386,11 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
       {/* Navigation Arrows */}
       <button
         onClick={prevSlide}
-        className="group absolute left-4 top-1/2 z-30 -translate-y-1/2 rounded-full bg-white/10 p-4 backdrop-blur-md transition-all duration-300 hover:bg-white/20 hover:scale-110 hover:shadow-lg border border-white/20"
+        className="group absolute left-2 sm:left-4 top-1/2 z-30 -translate-y-1/2 rounded-full bg-white/10 p-2 sm:p-4 backdrop-blur-md transition-all duration-300 hover:bg-white/20 hover:scale-110 active:scale-95 hover:shadow-lg border border-white/20"
         aria-label="Previous image"
       >
         <svg
-          className="h-6 w-6 text-white transition-transform duration-300 group-hover:-translate-x-1"
+          className="h-4 w-4 sm:h-6 sm:w-6 text-white transition-transform duration-300 group-hover:-translate-x-1"
           fill="none"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -404,11 +404,11 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
 
       <button
         onClick={nextSlide}
-        className="group absolute right-4 top-1/2 z-30 -translate-y-1/2 rounded-full bg-white/10 p-4 backdrop-blur-md transition-all duration-300 hover:bg-white/20 hover:scale-110 hover:shadow-lg border border-white/20"
+        className="group absolute right-2 sm:right-4 top-1/2 z-30 -translate-y-1/2 rounded-full bg-white/10 p-2 sm:p-4 backdrop-blur-md transition-all duration-300 hover:bg-white/20 hover:scale-110 active:scale-95 hover:shadow-lg border border-white/20"
         aria-label="Next image"
       >
         <svg
-          className="h-6 w-6 text-white transition-transform duration-300 group-hover:translate-x-1"
+          className="h-4 w-4 sm:h-6 sm:w-6 text-white transition-transform duration-300 group-hover:translate-x-1"
           fill="none"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -429,7 +429,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
       </div>
 
       {/* Indicators */}
-      <div className="absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 space-x-3">
+      <div className="absolute bottom-4 sm:bottom-6 left-1/2 z-30 flex -translate-x-1/2 space-x-2 sm:space-x-3">
         {carouselImages.map((_, index) => (
           <button
             key={index}
@@ -440,10 +440,10 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
             }}
             type="button"
             className={`
-              relative h-3 rounded-full transition-all duration-300 cursor-pointer
+              relative h-2 sm:h-3 rounded-full transition-all duration-300 cursor-pointer touch-manipulation
               ${index === currentIndex
-                ? 'w-12 bg-white shadow-lg'
-                : 'w-3 bg-white/50 hover:bg-white/75 hover:scale-125'
+                ? 'w-8 sm:w-12 bg-white shadow-lg'
+                : 'w-2 sm:w-3 bg-white/50 hover:bg-white/75 hover:scale-125 active:scale-110'
               }
             `}
             aria-label={`Go to slide ${index + 1}`}

@@ -61,10 +61,10 @@ export default function BookingForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto max-w-2xl space-y-6 rounded-lg bg-white p-8 shadow-lg">
-      <h2 className="mb-6 text-3xl font-bold text-gray-800">Book Your Appointment</h2>
+    <form onSubmit={handleSubmit} className="mx-auto w-full max-w-2xl space-y-4 sm:space-y-6 rounded-lg bg-white p-4 sm:p-6 md:p-8 shadow-lg">
+      <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl font-bold text-gray-800">Book Your Appointment</h2>
       
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
         <div className="relative">
           <input
             type="text"
@@ -75,12 +75,12 @@ export default function BookingForm() {
             onFocus={() => setFocusedField('customer_name')}
             onBlur={() => setFocusedField('')}
             required
-            className="peer w-full rounded-lg border border-gray-300 px-4 pt-6 pb-2 text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
             placeholder=" "
           />
           <label
             htmlFor="customer_name"
-            className="absolute left-4 top-4 text-gray-500 transition-all duration-200 peer-focus:top-2 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
+            className="absolute left-3 sm:left-4 top-3 sm:top-4 text-sm text-gray-500 transition-all duration-200 peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:text-xs"
           >
             Full Name 
           </label>
@@ -96,12 +96,12 @@ export default function BookingForm() {
             onFocus={() => setFocusedField('customer_email')}
             onBlur={() => setFocusedField('')}
             required
-            className="peer w-full rounded-lg border border-gray-300 px-4 pt-6 pb-2 text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
             placeholder=" "
           />
           <label
             htmlFor="customer_email"
-            className="absolute left-4 top-4 text-gray-500 transition-all duration-200 peer-focus:top-2 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
+            className="absolute left-3 sm:left-4 top-3 sm:top-4 text-sm text-gray-500 transition-all duration-200 peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:text-xs"
           >
             Email 
           </label>
@@ -117,12 +117,12 @@ export default function BookingForm() {
             onFocus={() => setFocusedField('customer_phone')}
             onBlur={() => setFocusedField('')}
             required
-            className="peer w-full rounded-lg border border-gray-300 px-4 pt-6 pb-2 text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
             placeholder=" "
           />
           <label
             htmlFor="customer_phone"
-            className="absolute left-4 top-4 text-gray-500 transition-all duration-200 peer-focus:top-2 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
+            className="absolute left-3 sm:left-4 top-3 sm:top-4 text-sm text-gray-500 transition-all duration-200 peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:text-xs"
           >
             Phone Number 
           </label>
@@ -137,7 +137,7 @@ export default function BookingForm() {
             onFocus={() => setFocusedField('service_type')}
             onBlur={() => setFocusedField('')}
             required
-            className="peer w-full rounded-lg border border-gray-300 px-4 pt-6 pb-2 text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200 bg-white"
           >
             <option value=""></option>
             {SERVICE_TYPES.map(service => (
@@ -148,10 +148,10 @@ export default function BookingForm() {
           </select>
           <label
             htmlFor="service_type"
-            className={`absolute left-4 transition-all duration-200 ${
+            className={`absolute left-3 sm:left-4 transition-all duration-200 text-sm ${
               formData.service_type || focusedField === 'service_type'
-                ? 'top-2 text-xs text-pink-500'
-                : 'top-4 text-gray-500'
+                ? 'top-1.5 text-xs text-pink-500'
+                : 'top-3 sm:top-4 text-gray-500'
             }`}
           >
             Service Type 
@@ -161,7 +161,7 @@ export default function BookingForm() {
         <div className="relative">
           <label
             htmlFor="appointment_date"
-            className={`absolute left-4 top-2 text-xs pointer-events-none z-10 transition-colors duration-200 ${
+            className={`absolute left-3 sm:left-4 top-1.5 text-xs pointer-events-none z-10 transition-colors duration-200 ${
               formData.appointment_date || focusedField === 'appointment_date'
                 ? 'text-pink-500'
                 : 'text-gray-500'
@@ -179,14 +179,14 @@ export default function BookingForm() {
             onBlur={() => setFocusedField('')}
             required
             min={new Date().toISOString().split('T')[0]}
-            className="w-full rounded-lg border border-gray-300 px-4 pt-6 pb-2 text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
           />
         </div>
 
         <div className="relative">
           <label
             htmlFor="appointment_time"
-            className={`absolute left-4 top-2 text-xs pointer-events-none z-10 transition-colors duration-200 ${
+            className={`absolute left-3 sm:left-4 top-1.5 text-xs pointer-events-none z-10 transition-colors duration-200 ${
               formData.appointment_time || focusedField === 'appointment_time'
                 ? 'text-pink-500'
                 : 'text-gray-500'
@@ -203,7 +203,7 @@ export default function BookingForm() {
             onFocus={() => setFocusedField('appointment_time')}
             onBlur={() => setFocusedField('')}
             required
-            className="w-full rounded-lg border border-gray-300 px-4 pt-6 pb-2 text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
           />
         </div>
       </div>
@@ -217,25 +217,25 @@ export default function BookingForm() {
           onFocus={() => setFocusedField('notes')}
           onBlur={() => setFocusedField('')}
           rows={4}
-          className="peer w-full rounded-lg border border-gray-300 px-4 pt-6 pb-2 text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+          className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200 resize-none"
           placeholder=" "
         />
         <label
           htmlFor="notes"
-          className="absolute left-4 top-4 text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-2 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
+          className="absolute left-3 sm:left-4 top-3 sm:top-4 text-sm text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:text-xs"
         >
           Additional Notes
         </label>
       </div>
 
       {submitStatus === 'success' && (
-        <div className="rounded-lg bg-green-100 p-4 text-green-800">
+        <div className="rounded-lg bg-green-100 p-3 sm:p-4 text-sm sm:text-base text-green-800">
           Appointment booked successfully! We'll contact you soon to confirm.
         </div>
       )}
 
       {submitStatus === 'error' && (
-        <div className="rounded-lg bg-red-100 p-4 text-red-800">
+        <div className="rounded-lg bg-red-100 p-3 sm:p-4 text-sm sm:text-base text-red-800">
           {errorMessage || 'Failed to book appointment. Please try again.'}
         </div>
       )}
@@ -243,7 +243,7 @@ export default function BookingForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 px-6 py-3 font-semibold text-white transition-all duration-300 hover:from-pink-600 hover:to-purple-700 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-semibold text-white transition-all duration-300 hover:from-pink-600 hover:to-purple-700 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
       >
         {isSubmitting ? 'Booking...' : 'Book Appointment'}
       </button>

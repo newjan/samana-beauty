@@ -10,7 +10,7 @@ import AppointmentPage from './AppointmentPage';
 import ContactPage from './ContactPage';
 
 interface ScrollableHomePageProps {
-  onTabChange: (tab: TabType, shouldScroll?: boolean) => void;
+  onTabChange: (tab: TabType) => void;
   activeTab: TabType;
 }
 
@@ -19,7 +19,7 @@ export default function ScrollableHomePage({ onTabChange, activeTab }: Scrollabl
     home: null,
     about: null,
     services: null,
-    products: null,
+    // products: null,
     appointment: null,
     contact: null,
   });
@@ -97,11 +97,11 @@ export default function ScrollableHomePage({ onTabChange, activeTab }: Scrollabl
         });
 
         // Update active tab if different and sufficiently visible
-        if (mostVisibleSection && mostVisibleSection !== activeTab && maxRatio > 0.3) {
+        if (mostVisibleSection && mostVisibleSection !== activeTab && maxRatio > 0.2) {
           // Mark that this is from scrolling, not clicking
           shouldScrollRef.current = false;
-          // Pass false to indicate this is from scrolling, not clicking
-          onTabChange(mostVisibleSection, false);
+          // Update tab without scrolling
+          onTabChange(mostVisibleSection);
         }
       },
       {
@@ -143,7 +143,7 @@ export default function ScrollableHomePage({ onTabChange, activeTab }: Scrollabl
   // Handle navigation from child components
   const handleNavigate = (tab: TabType) => {
     shouldScrollRef.current = true; // Ensure we scroll for clicks
-    onTabChange(tab, true);
+    onTabChange(tab);
   };
 
   return (
@@ -161,7 +161,7 @@ export default function ScrollableHomePage({ onTabChange, activeTab }: Scrollabl
       <section
         ref={(el) => {sectionsRef.current.about = el}}
         id="about"
-        className="scroll-mt-20"
+        className="scroll-mt-16 sm:scroll-mt-20 md:scroll-mt-18"
       >
         <AboutPage />
       </section> 
@@ -170,25 +170,25 @@ export default function ScrollableHomePage({ onTabChange, activeTab }: Scrollabl
       <section
         ref={(el) => {sectionsRef.current.services = el}}
         id="services"
-        className="scroll-mt-20"
+        className="scroll-mt-16 sm:scroll-mt-20 md:scroll-mt-18"
       >
         <ServicesPage onNavigate={handleNavigate} />
       </section>
 
       {/* Products Section */}
-      <section
+      {/* <section
         ref={(el) => {sectionsRef.current.products = el}}
         id="products"
-        className="scroll-mt-20"
+        className="scroll-mt-16 sm:scroll-mt-20 md:scroll-mt-18"
       >
         <ProductsPage />
-      </section>
+      </section> */}
 
       {/* Appointment Section */}
       <section
         ref={(el) => {sectionsRef.current.appointment = el}}
         id="appointment"
-        className="scroll-mt-20"
+        className="scroll-mt-16 sm:scroll-mt-20 md:scroll-mt-18"
       >
         <AppointmentPage />
       </section>
@@ -197,7 +197,7 @@ export default function ScrollableHomePage({ onTabChange, activeTab }: Scrollabl
       <section
         ref={(el) => {sectionsRef.current.contact = el}}
         id="contact"
-        className="scroll-mt-20"
+        className="scroll-mt-16 sm:scroll-mt-20 md:scroll-mt-18"
       >
         <ContactPage />
       </section>
