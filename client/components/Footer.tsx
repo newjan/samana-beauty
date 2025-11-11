@@ -72,14 +72,14 @@ export default function Footer({ onNavigate }: FooterProps) {
                   Services
                 </button>
               </li>
-              <li>
+              {/* <li>
                 <button
                   onClick={() => handleLinkClick('products')}
                   className="text-sm sm:text-base text-gray-400 hover:text-pink-400 transition-colors active:scale-95"
                 >
                   Products
                 </button>
-              </li>
+              </li> */}
             </ul>
           </div>
 
