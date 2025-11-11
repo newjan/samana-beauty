@@ -1,13 +1,16 @@
 'use client';
 
+import { useSalonServices } from '@/lib/queries/useSalonServices';
 import { TabType } from './TabNavigation';
 import Image from 'next/image';
+
 interface FooterProps {
   onNavigate?: (tab: TabType) => void;
 }
 
 export default function Footer({ onNavigate }: FooterProps) {
   const currentYear = new Date().getFullYear();
+  const { data: services = [] } = useSalonServices();
 
   const handleLinkClick = (tab: TabType) => {
     if (onNavigate) {
@@ -87,12 +90,13 @@ export default function Footer({ onNavigate }: FooterProps) {
           <div>
             <h4 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold">Services</h4>
             <ul className="space-y-2 text-sm sm:text-base text-gray-400">
-              <li>Hair Styling</li>
-              <li>Hair Coloring</li>
-              <li>Facial Treatment</li>
-              <li>Nail Care</li>
-              <li>Massage Therapy</li>
-              <li>Makeup</li>
+              {services.length > 0 ? (
+                services.map((service: any) => (
+                  <li key={service.id}>{service.title}</li>
+                ))
+              ) : (
+                <li>Loading...</li>
+              )}
             </ul>
           </div>
 

@@ -1,10 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { createAppointment, Appointment, fetchSalonServices, Service } from '@/lib/api';
+import { useState } from 'react';
+import { createAppointment, Appointment } from '@/lib/api';
+import { useSalonServices } from '@/lib/queries/useSalonServices';
 
 export default function BookingForm() {
-  const [serviceTypes, setServiceTypes] = useState<string[]>([]);
+  const { data: services = [] } = useSalonServices();
+  const serviceTypes = services.map((s: any) => s.title);
+
   const [formData, setFormData] = useState<Omit<Appointment, 'id' | 'status' | 'created_at' | 'updated_at'>>({
     customer_name: '',
     customer_email: '',
@@ -18,14 +21,6 @@ export default function BookingForm() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [focusedField, setFocusedField] = useState<string>('');
-
-  useEffect(() => {
-    fetchSalonServices()
-      .then((services: Service[]) => {
-        setServiceTypes(services.map(s => s.title));
-      })
-      .catch(() => setServiceTypes([]));
-  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;

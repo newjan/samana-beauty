@@ -3,11 +3,15 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { TabType } from './TabNavigation';
-import { fetchBanners, Banner as BannerType } from '../lib/api';
+import { useBanners } from '@/lib/queries/useBanners';
 
-interface CarouselImage extends BannerType {
-  alt: string;
+interface CarouselImage {
+  id: number;
+  image: string;
+  title?: string;
+  subtitle?: string;
   description?: string;
+  alt?: string;
 }
 
 interface ImageCarouselProps {
@@ -15,9 +19,7 @@ interface ImageCarouselProps {
 }
 
 export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
-  const [carouselImages, setCarouselImages] = useState<CarouselImage[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: carouselImages = [], isLoading: loading, error } = useBanners();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -25,54 +27,6 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
   const carouselRef = useRef<HTMLDivElement>(null);
   const autoPlayTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const animationFrameRef = useRef<number | null>(null);
-
-  // Fetch banners from backend using fetchBanners
-  useEffect(() => {
-    // Try to load from localStorage first
-    const cached = typeof window !== 'undefined' ? localStorage.getItem('carouselBanners') : null;
-    let loadedFromCache = false;
-    if (cached) {
-      try {
-        const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setCarouselImages(parsed);
-          setCurrentIndex(0);
-          setLoading(false);
-          loadedFromCache = true;
-        }
-      } catch (e) {}
-    }
-    // Always try to fetch from API
-    fetchBanners()
-      .then((data) => {
-        const banners = data.map((item) => ({
-          ...item,
-          alt: item.title || 'Banner',
-          description: item.description || '',
-        }));
-        if (banners.length > 0) {
-          setCarouselImages(banners);
-          setCurrentIndex(0); // Reset index after loading images
-          setLoading(false);
-          // Update localStorage
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('carouselBanners', JSON.stringify(banners));
-          }
-        } else if (!loadedFromCache) {
-          setLoading(false);
-          setError('No banners available');
-        }
-      })
-      .catch((err) => {
-        if (!loadedFromCache) {
-          setError(err.message);
-          setLoading(false);
-        } else {
-          setError(null); // Clear error if we can show cached
-          setLoading(false);
-        }
-      });
-  }, []);
 
   // Simplified auto-play logic
   useEffect(() => {
@@ -206,7 +160,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
   }
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen w-full bg-red-100 text-red-500 text-xl">{error}</div>
+      <div className="flex items-center justify-center min-h-screen w-full bg-red-100 text-red-500 text-xl">{error.message}</div>
     );
   }
   if (carouselImages.length === 0) {
@@ -241,7 +195,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
             <div className="relative h-full w-full">
               <Image
                 src={image.image}
-                alt={image.alt}
+                alt={image.title}
                 fill
                 className="object-cover transition-transform duration-700"
                 priority={index === 0}

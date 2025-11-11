@@ -1,32 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { TabType } from '../TabNavigation';
-import { fetchSalonServices, Service } from '../../lib/api';
 import parse from 'html-react-parser';
+import { useSalonServices } from '@/lib/queries/useSalonServices';
 
 interface ServicesPageProps {
   onNavigate?: (tab: TabType) => void;
 }
 
 export default function ServicesPage({ onNavigate }: ServicesPageProps) {
+  const { data: services = [], isLoading: loading, error } = useSalonServices();
   const [selectedService, setSelectedService] = useState<number | null>(null);
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setLoading(true);
-    fetchSalonServices()
-      .then((data) => {
-        setServices(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
 
   const handleScheduleClick = () => {
     if (onNavigate) {
@@ -43,7 +28,7 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
     return <div className="flex items-center justify-center min-h-screen w-full bg-gray-100 text-gray-500 text-xl">Loading services...</div>;
   }
   if (error) {
-    return <div className="flex items-center justify-center min-h-screen w-full bg-red-100 text-red-500 text-xl">{error}</div>;
+    return <div className="flex items-center justify-center min-h-screen w-full bg-red-100 text-red-500 text-xl">{error.message}</div>;
   }
   if (services.length === 0) {
     return <div className="flex items-center justify-center min-h-screen w-full text-gray-400 text-xl">No services available</div>;
