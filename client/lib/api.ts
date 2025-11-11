@@ -26,6 +26,42 @@ export interface Appointment {
   updated_at?: string;
 }
 
+export interface Banner {
+  id: number;
+  title: string;
+  description?: string;
+  subtitle?: string;
+  image: string;
+  link?: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ServiceCategory {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Service {
+  id: number;
+  title: string;
+  slug: string;
+  description?: string;
+  price?: number;
+  duration_minutes?: number;
+  image?: string;
+  is_active?: boolean;
+  category?: ServiceCategory;
+  created_at?: string;
+  updated_at?: string;
+  additional_info?: string; // CKEditor5 HTML
+}
+
 export async function fetchProducts(): Promise<Product[]> {
   const response = await fetch(`${API_BASE_URL}/products/`);
   if (!response.ok) {
@@ -65,5 +101,35 @@ export async function createAppointment(appointment: Appointment): Promise<Appoi
     throw new Error(error.detail || 'Failed to create appointment');
   }
   return response.json();
+}
+
+export async function fetchBanners(): Promise<Banner[]> {
+  const response = await fetch(`${API_BASE_URL}/banners/`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch banners');
+  }
+  const data = await response.json();
+  if (Array.isArray(data)) {
+    return data;
+  }
+  if (data.results && Array.isArray(data.results)) {
+    return data.results;
+  }
+  return [];
+}
+
+export async function fetchSalonServices(): Promise<Service[]> {
+  const response = await fetch(`${API_BASE_URL}/services/`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch services');
+  }
+  const data = await response.json();
+  if (Array.isArray(data)) {
+    return data;
+  }
+  if (data.results && Array.isArray(data.results)) {
+    return data.results;
+  }
+  return [];
 }
 

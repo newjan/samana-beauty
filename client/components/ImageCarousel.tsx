@@ -3,56 +3,21 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { TabType } from './TabNavigation';
+import { fetchBanners, Banner as BannerType } from '../lib/api';
 
-interface CarouselImage {
-  id: number;
-  url: string;
+interface CarouselImage extends BannerType {
   alt: string;
-  title?: string;
   description?: string;
-  subtitle?: string;
 }
 
 interface ImageCarouselProps {
   onNavigate?: (tab: TabType) => void;
 }
 
-const carouselImages: CarouselImage[] = [
-  {
-    id: 1,
-    url: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?w=1920&q=80',
-    alt: 'Beauty salon interior',
-    subtitle: '',
-    title: 'Samana The Beauty Gallery',
-    description: 'Your destination for beauty, wellness, and self-care',
-  },
-  {
-    id: 2,
-    url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1920&q=80',
-    alt: 'Hair styling service',
-    subtitle: 'Expert',
-    title: 'Hair Styling',
-    description: 'Professional stylists at your service',
-  },
-  {
-    id: 3,
-    url: 'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=1920&q=80',
-    alt: 'Facial treatment',
-    subtitle: 'Rejuvenating',
-    title: 'Facial Treatments',
-    description: 'Premium skincare and wellness',
-  },
-  {
-    id: 4,
-    url: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=1920&q=80',
-    alt: 'Nail care service',
-    subtitle: 'Luxury',
-    title: 'Nail Care',
-    description: 'Beautiful nails for beautiful you',
-  },
-];
-
 export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
+  const [carouselImages, setCarouselImages] = useState<CarouselImage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -61,32 +26,68 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
   const autoPlayTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const animationFrameRef = useRef<number | null>(null);
 
+  // Fetch banners from backend using fetchBanners
+  useEffect(() => {
+    // Try to load from localStorage first
+    const cached = typeof window !== 'undefined' ? localStorage.getItem('carouselBanners') : null;
+    let loadedFromCache = false;
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setCarouselImages(parsed);
+          setCurrentIndex(0);
+          setLoading(false);
+          loadedFromCache = true;
+        }
+      } catch (e) {}
+    }
+    // Always try to fetch from API
+    fetchBanners()
+      .then((data) => {
+        const banners = data.map((item) => ({
+          ...item,
+          alt: item.title || 'Banner',
+          description: item.description || '',
+        }));
+        if (banners.length > 0) {
+          setCarouselImages(banners);
+          setCurrentIndex(0); // Reset index after loading images
+          setLoading(false);
+          // Update localStorage
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('carouselBanners', JSON.stringify(banners));
+          }
+        } else if (!loadedFromCache) {
+          setLoading(false);
+          setError('No banners available');
+        }
+      })
+      .catch((err) => {
+        if (!loadedFromCache) {
+          setError(err.message);
+          setLoading(false);
+        } else {
+          setError(null); // Clear error if we can show cached
+          setLoading(false);
+        }
+      });
+  }, []);
+
   // Simplified auto-play logic
   useEffect(() => {
-    // Cancel any existing animation
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
+    if (!isAutoPlaying || carouselImages.length === 0) return;
 
-    if (!isAutoPlaying) {
-      // Keep progress frozen when not autoplaying
-      return;
-    }
-
-    // Clear any existing timeout
-    if (autoPlayTimeoutRef.current) {
-      clearTimeout(autoPlayTimeoutRef.current);
-    }
-
-    // Reset progress
     setProgress(0);
 
     // Animate progress bar
     const startTime = Date.now();
     const duration = 5000; // 5 seconds per slide
+    let isCancelled = false;
 
     const animateProgress = () => {
+      if (isCancelled) return;
+
       const elapsed = Date.now() - startTime;
       const newProgress = Math.min((elapsed / duration) * 100, 100);
       
@@ -96,22 +97,24 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
         animationFrameRef.current = requestAnimationFrame(animateProgress);
       } else {
         // Move to next slide
-        setCurrentIndex((prev) => (prev + 1) % carouselImages.length);
+        setCurrentIndex((prev) => carouselImages.length > 0 ? (prev + 1) % carouselImages.length : 0);
       }
     };
 
     animationFrameRef.current = requestAnimationFrame(animateProgress);
 
     return () => {
+      isCancelled = true;
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
         animationFrameRef.current = null;
       }
       if (autoPlayTimeoutRef.current) {
         clearTimeout(autoPlayTimeoutRef.current);
+        autoPlayTimeoutRef.current = null;
       }
     };
-  }, [isAutoPlaying, currentIndex]);
+  }, [isAutoPlaying, currentIndex, carouselImages.length]);
 
   // Parallax effect on mouse move
   useEffect(() => {
@@ -132,6 +135,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
   }, []);
 
   const goToSlide = (index: number) => {
+    if (carouselImages.length === 0) return;
     setCurrentIndex(index);
     setProgress(0);
     setIsAutoPlaying(false);
@@ -146,6 +150,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
   };
 
   const nextSlide = () => {
+    if (carouselImages.length === 0) return;
     setCurrentIndex((prev) => (prev + 1) % carouselImages.length);
     setProgress(0);
     setIsAutoPlaying(false);
@@ -159,6 +164,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
   };
 
   const prevSlide = () => {
+    if (carouselImages.length === 0) return;
     setCurrentIndex((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
     setProgress(0);
     setIsAutoPlaying(false);
@@ -182,6 +188,32 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
       onNavigate('services');
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400">
+        <div className="relative w-full h-screen">
+          <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-300 via-gray-200 to-gray-300 opacity-80" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <div className="w-2/3 max-w-2xl h-14 rounded-lg bg-gray-300/80 mb-6 animate-pulse" />
+            <div className="w-1/2 max-w-lg h-10 rounded-lg bg-gray-200/80 mb-3 animate-pulse" />
+            <div className="w-1/3 max-w-md h-8 rounded-lg bg-gray-100/80 mb-2 animate-pulse" />
+            <div className="w-1/2 max-w-lg h-12 rounded-lg bg-gray-300/70 mt-10 animate-pulse" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen w-full bg-red-100 text-red-500 text-xl">{error}</div>
+    );
+  }
+  if (carouselImages.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen w-full text-gray-400 text-xl">No banners available</div>
+    );
+  }
 
   return (
     <div 
@@ -208,7 +240,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
           >
             <div className="relative h-full w-full">
               <Image
-                src={image.url}
+                src={image.image}
                 alt={image.alt}
                 fill
                 className="object-cover transition-transform duration-700"

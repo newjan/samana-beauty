@@ -1,15 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TabType } from '../TabNavigation';
-
-interface Service {
-  icon: string;
-  title: string;
-  description: string;
-  price: string;
-  duration: string;
-}
+import { fetchSalonServices, Service } from '../../lib/api';
+import parse from 'html-react-parser';
 
 interface ServicesPageProps {
   onNavigate?: (tab: TabType) => void;
@@ -17,12 +11,27 @@ interface ServicesPageProps {
 
 export default function ServicesPage({ onNavigate }: ServicesPageProps) {
   const [selectedService, setSelectedService] = useState<number | null>(null);
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchSalonServices()
+      .then((data) => {
+        setServices(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
 
   const handleScheduleClick = () => {
     if (onNavigate) {
       onNavigate('appointment');
     } else {
-      // Fallback: scroll to appointment section if on scrollable page
       const appointmentSection = document.getElementById('appointment');
       if (appointmentSection) {
         appointmentSection.scrollIntoView({ behavior: 'smooth' });
@@ -30,64 +39,15 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
     }
   };
 
-  const services: Service[] = [
-    {
-      icon: '💇',
-      title: 'Haircut & Styling',
-      description: 'Professional haircuts tailored to your face shape and style preferences. Includes wash, cut, and styling.',
-      price: 'Rs.45 - Rs.120',
-      duration: '45-90 min',
-    },
-    {
-      icon: '🎨',
-      title: 'Hair Coloring',
-      description: 'Expert color services including highlights, balayage, ombre, and full color transformations.',
-      price: 'Rs.80 - Rs.250',
-      duration: '2-4 hours',
-    },
-    {
-      icon: '💆',
-      title: 'Hair Treatment',
-      description: 'Deep conditioning treatments, keratin smoothing, and repair treatments for healthy, shiny hair.',
-      price: 'Rs.60 - Rs.180',
-      duration: '60-120 min',
-    },
-    {
-      icon: '💅',
-      title: 'Manicure & Pedicure',
-      description: 'Luxurious nail care services with premium polish and nail art options.',
-      price: 'Rs.35 - Rs.85',
-      duration: '60-90 min',
-    },
-    {
-      icon: '✨',
-      title: 'Facial Treatment',
-      description: 'Rejuvenating facials customized for your skin type. Includes cleansing, exfoliation, and hydration.',
-      price: 'Rs.70 - Rs.150',
-      duration: '60-90 min',
-    },
-    {
-      icon: '🧘',
-      title: 'Massage Therapy',
-      description: 'Relaxing massage services to relieve tension and promote wellness.',
-      price: 'Rs.80 - Rs.140',
-      duration: '60-90 min',
-    },
-    {
-      icon: '💄',
-      title: 'Makeup Application',
-      description: 'Professional makeup for special events, weddings, or everyday glamour.',
-      price: 'Rs.60 - Rs.200',
-      duration: '60-120 min',
-    },
-    {
-      icon: '👁️',
-      title: 'Eyebrow & Eyelash',
-      description: 'Brow shaping, tinting, and lash extensions for defined, beautiful eyes.',
-      price: 'Rs.40 - Rs.120',
-      duration: '30-90 min',
-    },
-  ];
+  if (loading) {
+    return <div className="flex items-center justify-center min-h-screen w-full bg-gray-100 text-gray-500 text-xl">Loading services...</div>;
+  }
+  if (error) {
+    return <div className="flex items-center justify-center min-h-screen w-full bg-red-100 text-red-500 text-xl">{error}</div>;
+  }
+  if (services.length === 0) {
+    return <div className="flex items-center justify-center min-h-screen w-full text-gray-400 text-xl">No services available</div>;
+  }
 
   return (
     <section className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50 px-4 py-12 sm:py-16 md:py-20 sm:px-6 lg:px-8">
@@ -105,7 +65,7 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {services.map((service, index) => (
             <div
-              key={index}
+              key={service.id}
               onClick={() => setSelectedService(selectedService === index ? null : index)}
               className={`
                 group relative cursor-pointer overflow-hidden rounded-2xl bg-white p-5 sm:p-6 shadow-lg transition-all duration-300
@@ -122,18 +82,28 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
               `}></div>
 
               <div className="relative z-10">
-                <div className="mb-3 sm:mb-4 text-4xl sm:text-5xl transition-transform duration-300 group-hover:scale-110">
-                  {service.icon}
-                </div>
+                {/* Service Image if available */}
+                {service.image && (
+                  <img src={service.image} alt={service.title} className="mb-3 sm:mb-4 w-full h-40 object-cover rounded-xl" />
+                )}
                 <h3 className="mb-2 sm:mb-3 text-xl sm:text-2xl font-bold text-gray-800">{service.title}</h3>
                 <p className="mb-3 sm:mb-4 text-sm sm:text-base text-gray-600 leading-relaxed">{service.description}</p>
-                
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 border-t border-gray-200 pt-3 sm:pt-4">
                   <div>
-                    <p className="text-xs sm:text-sm font-semibold text-pink-600">{service.price}</p>
-                    <p className="text-xs text-gray-500">{service.duration}</p>
+                    <p className="text-xs sm:text-sm font-semibold text-pink-600">{service.price ? `Rs.${service.price}` : ''}</p>
+                    <p className="text-xs text-gray-500">{service.duration_minutes ? `${service.duration_minutes} min` : ''}</p>
+                    {service.category && (
+                      <p className="text-xs text-purple-600 font-semibold">{service.category.name}</p>
+                    )}
                   </div>
-                  <button className="rounded-full bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 text-xs sm:text-sm font-semibold text-white transition-all duration-300 hover:scale-110 active:scale-95 w-full sm:w-auto">
+                  <button
+                    className="relative z-20 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 text-xs sm:text-sm font-semibold text-white transition-all duration-300 hover:scale-110 active:scale-95 w-full sm:w-auto"
+                    style={{ pointerEvents: 'auto' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleScheduleClick();
+                    }}
+                  >
                     Book Now
                   </button>
                 </div>
@@ -141,14 +111,11 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
 
               {/* Expandable Details */}
               {selectedService === index && (
-                <div className="relative z-10 mt-3 sm:mt-4 animate-fade-in border-t border-gray-200 pt-3 sm:pt-4">
-                  <p className="mb-2 text-xs sm:text-sm font-semibold text-gray-700">What's Included:</p>
-                  <ul className="space-y-1 text-xs sm:text-sm text-gray-600">
-                    <li>• Consultation with expert</li>
-                    <li>• Premium products</li>
-                    <li>• Complimentary refreshments</li>
-                    <li>• Aftercare advice</li>
-                  </ul>
+                <div className="relative z-10 mt-3 sm:mt-4 animate-fade-in border-t border-gray-200 pt-3 sm:pt-4 text-gray-500">
+                  {/* Render CKEditor5 HTML if present using html-react-parser */}
+                  {service.additional_info && (
+                    parse(service.additional_info)
+                  )}
                 </div>
               )}
             </div>

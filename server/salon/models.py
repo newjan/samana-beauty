@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.utils.text import slugify
+from django_ckeditor_5.fields import CKEditor5Field
 
 
 class Product(models.Model):
@@ -45,3 +47,56 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"{self.customer_name} - {self.appointment_date} {self.appointment_time}"
+
+
+class Banner(models.Model):
+    title = models.CharField(max_length=255)
+    subtitle = models.CharField(max_length=500, blank=True, null=True)
+    image = models.ImageField(upload_to="banners/")
+    description = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    priority = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['priority', '-created_at']
+
+    def __str__(self):
+        return self.title
+
+class ServiceCategory(models.Model):
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+class Service(models.Model):
+    category = models.ForeignKey(ServiceCategory, related_name="services", on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
+    description = models.TextField(blank=True, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    duration_minutes = models.PositiveIntegerField(blank=True, null=True)
+    image = models.ImageField(upload_to="services/", blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    additional_info = CKEditor5Field('Additional Info', config_name='extends', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title

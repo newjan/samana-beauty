@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Product, Appointment
@@ -42,4 +42,18 @@ class HealthCheckView(APIView):
 
     def get(self, request):
         return Response({"status": "ok"}, status=status.HTTP_200_OK)
+    
+from .models import Banner, Service
+from .serializers import BannerSerializer, ServiceSerializer
+
+
+class BannerListAPIView(generics.ListAPIView):
+    queryset = Banner.objects.filter(is_active=True).order_by("priority")
+    serializer_class = BannerSerializer
+
+
+class ServiceListAPIView(generics.ListAPIView):
+    queryset = Service.objects.filter(is_active=True).select_related("category").order_by("title")
+    serializer_class = ServiceSerializer
+
 

@@ -34,7 +34,7 @@ export default function TabNavigation({ activeTab, onTabChange }: TabNavigationP
             <Image 
               src="/samana-logo.png" 
               alt="Samana Beauty Logo" 
-              width={50} 
+              width={50}
               height={50} 
               className="rounded-full object-contain flex-shrink-0 hidden sm:block" 
               priority 
@@ -61,7 +61,7 @@ export default function TabNavigation({ activeTab, onTabChange }: TabNavigationP
                 className={`
                   relative rounded-full px-4 xl:px-5 py-2 text-xs xl:text-sm font-semibold transition-all duration-300 whitespace-nowrap
                   ${activeTab === tab.id
-                    ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg scale-105'
+                    ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-xl/25 scale-105'
                     : 'text-gray-700 hover:bg-pink-50 hover:text-pink-600'
                   }
                 `}

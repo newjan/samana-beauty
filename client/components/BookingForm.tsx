@@ -1,20 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { createAppointment, Appointment } from '@/lib/api';
-
-const SERVICE_TYPES = [
-  'Haircut & Styling',
-  'Hair Coloring',
-  'Hair Treatment',
-  'Manicure & Pedicure',
-  'Facial Treatment',
-  'Massage Therapy',
-  'Makeup Application',
-  'Eyebrow & Eyelash',
-];
+import { useState, useEffect } from 'react';
+import { createAppointment, Appointment, fetchSalonServices, Service } from '@/lib/api';
 
 export default function BookingForm() {
+  const [serviceTypes, setServiceTypes] = useState<string[]>([]);
   const [formData, setFormData] = useState<Omit<Appointment, 'id' | 'status' | 'created_at' | 'updated_at'>>({
     customer_name: '',
     customer_email: '',
@@ -28,6 +18,14 @@ export default function BookingForm() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [focusedField, setFocusedField] = useState<string>('');
+
+  useEffect(() => {
+    fetchSalonServices()
+      .then((services: Service[]) => {
+        setServiceTypes(services.map(s => s.title));
+      })
+      .catch(() => setServiceTypes([]));
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -140,7 +138,7 @@ export default function BookingForm() {
             className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200 bg-white"
           >
             <option value=""></option>
-            {SERVICE_TYPES.map(service => (
+            {serviceTypes.map(service => (
               <option key={service} value={service}>
                 {service}
               </option>

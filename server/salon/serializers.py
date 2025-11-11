@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Appointment
+from .models import Product, Appointment, Banner, ServiceCategory, Service
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -27,4 +27,30 @@ class AppointmentSerializer(serializers.ModelSerializer):
         if value < timezone.now().date():
             raise serializers.ValidationError("Appointment date cannot be in the past.")
         return value
+
+
+class BannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Banner
+        fields = ["id", "title", "subtitle", "description", "image", "priority", "is_active", "created_at", "updated_at"]
+        
+    def get_image_url(self, obj):
+        if obj.image:
+            return obj.image.url  # Cloudinary-hosted URL
+        return None
+
+
+class ServiceCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceCategory
+        fields = ["id", "name", "slug", "description", "created_at", "updated_at"]
+
+
+class ServiceSerializer(serializers.ModelSerializer):
+    category = ServiceCategorySerializer(read_only=True)
+    class Meta:
+        model = Service
+        fields = [
+            "id", "title", "slug", "description", "price", "duration_minutes", "image", "is_active", "category", "created_at", "updated_at", "additional_info"
+        ]
 
