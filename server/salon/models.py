@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils.text import slugify
 from django_ckeditor_5.fields import CKEditor5Field
+from django.db.models import JSONField
 
 
 class Product(models.Model):
@@ -100,3 +101,32 @@ class Service(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class DashboardContent(models.Model):
+    slug = models.SlugField(max_length=100, unique=True)
+    data = JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Dashboard Content"
+        verbose_name_plural = "Dashboard Contents"
+
+    def __str__(self):
+        return self.slug
+
+
+class DashboardImage(models.Model):
+    content = models.ForeignKey(DashboardContent, related_name="images", on_delete=models.CASCADE)
+    key = models.CharField(max_length=150)
+    file = models.ImageField(upload_to="content/")
+    alt_text = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("content", "key")
+        ordering = ["key"]
+
+    def __str__(self):
+        return f"{self.content.slug}:{self.key}"

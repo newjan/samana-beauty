@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { TabType } from './TabNavigation';
 import { useBanners } from '@/lib/queries/useBanners';
+import { useDashboardContent } from '@/lib/queries/useDashboardContent';
 
 interface CarouselImage {
   id: number;
@@ -20,12 +21,13 @@ interface ImageCarouselProps {
 
 export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
   const { data: carouselImages = [], isLoading: loading, error } = useBanners();
+  const { data: dashboardContent, isLoading: isDashboardLoading } = useDashboardContent();
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const carouselRef = useRef<HTMLDivElement>(null);
   const autoPlayTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const animationFrameRef = useRef<number | null>(null);
 
   // Consistent auto-play logic using a simple 5s timer
   useEffect(() => {
@@ -104,19 +106,16 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
     }, 10000);
   };
 
-  const handleBookAppointment = () => {
+  const handleNavigate = (tab: TabType) => {
     if (onNavigate) {
-      onNavigate('appointment');
+      onNavigate(tab);
     }
   };
 
-  const handleExploreServices = () => {
-    if (onNavigate) {
-      onNavigate('services');
-    }
-  };
+  const carouselContent = dashboardContent?.carousel || {};
+  const { ctas, cards } = carouselContent;
 
-  if (loading) {
+  if (loading || isDashboardLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400">
         <div className="relative w-full h-screen">
@@ -170,7 +169,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
             <div className="relative h-full w-full">
               <Image
                 src={image.image}
-                alt={image.title}
+                alt={image.title || 'Carousel Image'}
                 fill
                 className="object-cover transition-transform duration-700"
                 priority={index === 0}
@@ -273,7 +272,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                     )}
 
                     {/* Additional text for first slide */}
-                    {index === 0 && (
+                    {index === 0 && dashboardContent?.about?.body && (
                       <p 
                         className={`mb-4 sm:mb-5 md:mb-6 max-w-2xl text-sm sm:text-base md:text-lg text-gray-300 transition-all duration-700 delay-400 ${
                           index === currentIndex 
@@ -281,13 +280,12 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                             : 'opacity-0 translate-y-10'
                         }`}
                       >
-                        Experience luxury beauty treatments in a serene and welcoming environment. 
-                        We combine expert techniques with premium products to bring out your natural beauty.
+                        {dashboardContent.about.body}
                       </p>
                     )}
 
                     {/* CTA Buttons - Only show on first slide */}
-                    {index === 0 && (
+                    {index === 0 && ctas && (
                       <div 
                         className={`mb-4 sm:mb-5 md:mb-6 flex flex-col gap-2 sm:gap-3 md:gap-4 sm:flex-row sm:justify-start transition-all duration-700 delay-500 ${
                           index === currentIndex 
@@ -295,24 +293,28 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                             : 'opacity-0 translate-y-10'
                         }`}
                       >
-                        <button
-                          onClick={handleBookAppointment}
-                          className="group relative overflow-hidden rounded-full bg-gradient-to-r from-pink-500 to-purple-600 px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base md:text-lg font-semibold text-white shadow-2xl transition-all duration-300 hover:scale-110 hover:shadow-pink-500/50 active:scale-95"
-                        >
-                          <span className="relative z-10">Book Your Appointment</span>
-                          <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                        </button>
-                        <button
-                          onClick={handleExploreServices}
-                          className="rounded-full border-2 border-white/80 bg-white/10 backdrop-blur-sm px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base md:text-lg font-semibold text-white transition-all duration-300 hover:scale-110 hover:bg-white/20 hover:shadow-lg active:scale-95"
-                        >
-                          Explore Our Services
-                        </button>
+                        {ctas.primary && (
+                          <button
+                            onClick={() => handleNavigate(ctas.primary.action as TabType)}
+                            className="group relative overflow-hidden rounded-full bg-gradient-to-r from-pink-500 to-purple-600 px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base md:text-lg font-semibold text-white shadow-2xl transition-all duration-300 hover:scale-110 hover:shadow-pink-500/50 active:scale-95"
+                          >
+                            <span className="relative z-10">{ctas.primary.label}</span>
+                            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                          </button>
+                        )}
+                        {ctas.secondary && (
+                          <button
+                            onClick={() => handleNavigate(ctas.secondary.action as TabType)}
+                            className="rounded-full border-2 border-white/80 bg-white/10 backdrop-blur-sm px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base md:text-lg font-semibold text-white transition-all duration-300 hover:scale-110 hover:bg-white/20 hover:shadow-lg active:scale-95"
+                          >
+                            {ctas.secondary.label}
+                          </button>
+                        )}
                       </div>
                     )}
 
                     {/* Feature Cards - Only on first slide */}
-                    {index === 0 && (
+                    {index === 0 && cards && (
                       <div 
                         className={`mt-3 sm:mt-4 md:mt-5 grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 w-full max-w-5xl transition-all duration-700 delay-700 ${
                           index === currentIndex 
@@ -320,18 +322,20 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                             : 'opacity-0 translate-y-10'
                         }`}
                       >
-                        {[
-                          { icon: '💆', title: 'Expert Stylists', desc: 'Trained professionals' },
-                          { icon: '🌿', title: 'Natural Products', desc: 'Premium quality ingredients' },
-                          { icon: '⭐', title: '5-Star Service', desc: 'Luxury experience' },
-                        ].map((feature, idx) => (
+                        {cards.map((feature: any, idx: number) => (
                           <div
                             key={idx}
                             className="group rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md p-2.5 sm:p-3 md:p-4 shadow-lg border border-white/20 transition-all duration-300 hover:scale-105 hover:bg-white/20 hover:shadow-2xl overflow-hidden"
                           >
-                            <div className="mb-1.5 sm:mb-2 text-2xl sm:text-3xl md:text-4xl transition-transform duration-300 group-hover:scale-110">{feature.icon}</div>
+                            <div className="mb-1.5 sm:mb-2 text-2xl sm:text-3xl md:text-4xl transition-transform duration-300 group-hover:scale-110">
+                              {feature.icon_type === 'image' && feature.image ? (
+                                <Image src={feature.image} alt={feature.title} width={48} height={48} className="object-contain" />
+                              ) : (
+                                feature.emoji
+                              )}
+                            </div>
                             <h3 className="mb-1 text-xs sm:text-sm md:text-base lg:text-lg font-bold text-white break-words">{feature.title}</h3>
-                            <p className="text-gray-200 text-[11px] sm:text-xs md:text-sm break-words leading-snug">{feature.desc}</p>
+                            <p className="text-gray-200 text-[11px] sm:text-xs md:text-sm break-words leading-snug">{feature.description}</p>
                           </div>
                         ))}
                       </div>

@@ -134,3 +134,15 @@ export async function fetchSalonServices(): Promise<Service[]> {
   }
   return [];
 }
+
+export interface DashboardContent {
+  [key: string]: any;
+}
+
+export async function fetchDashboardContent(): Promise<DashboardContent> {
+  const response = await fetch(`${API_BASE_URL}/dashboard-content/all/`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch dashboard content');
+  }
+  return response.json();
+}

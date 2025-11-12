@@ -1,0 +1,204 @@
+{
+  "carousel": {
+    "ctas": {
+      "primary": {
+        "label": "Book Your Appointment",
+        "action": "appointment"
+      },
+      "secondary": {
+        "label": "Explore Our Services",
+        "action": "services"
+      }
+    },
+    "cards": [
+      {
+        "emoji": "💆",
+        "title": "Expert Stylists",
+        "icon_type": "emoji",
+        "image_key": null,
+        "description": "Trained professionals"
+      },
+      {
+        "emoji": "🌿",
+        "title": "Natural Products",
+        "icon_type": "emoji",
+        "image_key": null,
+        "description": "Premium quality ingredients"
+      },
+      {
+        "emoji": "⭐",
+        "title": "5-Star Service",
+        "icon_type": "emoji",
+        "image_key": null,
+        "description": "Luxury experience"
+      }
+    ]
+  },
+  "about": {
+    "body": "Experience luxury beauty treatments in a serene and welcoming environment. We combine expert techniques with premium products to bring out your natural beauty.",
+    "cards": [
+      {
+        "emoji": "💆",
+        "title": "Expertise",
+        "icon_type": "emoji",
+        "image_key": null,
+        "description": "Years of experience"
+      },
+      {
+        "emoji": "🌿",
+        "title": "Natural",
+        "icon_type": "emoji",
+        "image_key": null,
+        "description": "Eco-friendly products"
+      },
+      {
+        "emoji": "✨",
+        "title": "Quality",
+        "icon_type": "emoji",
+        "image_key": null,
+        "description": "Premium services"
+      },
+      {
+        "emoji": "❤️",
+        "title": "Care",
+        "icon_type": "emoji",
+        "image_key": null,
+        "description": "Personalized attention"
+      }
+    ],
+    "title": "About Us",
+    "our_story": {
+      "title": "Our Story",
+      "content": "Founded with a passion for beauty and wellness, Samana Beauty has been serving our community for over a decade. We believe that everyone deserves to feel beautiful and confident in their own skin. \nOur team of expert stylists and beauty professionals are dedicated to providing you with an exceptional experience, using only the finest products and latest techniques in the industry.."
+    },
+    "our_mission": {
+      "title": "Our Mission",
+      "content": "To empower our clients to look and feel their best through personalized beauty services and premium products, delivered with care and expertise."
+    },
+    "why_choose_us": {
+      "title": "Why Choose Us",
+      "points": [
+        "Certified and experienced professionals",
+        "Premium quality products and tools",
+        "Personalized service for each client",
+        "Relaxing and luxurious atmosphere",
+        "Competitive pricing and packages"
+      ]
+    }
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Discover treatments tailored for you",
+    "bottom_card": {
+      "title": "Ready to Transform?",
+      "description": "Book your appointment today and experience the luxury you deserve",
+      "cta": {
+        "label": "Schedule Now",
+        "action": "appointment"
+      }
+    } 
+  },
+  "contact": {
+    "email": "samanabeautygallery@gmail.com",
+    "hours": [
+      {
+        "day": "Monday – Saturday",
+        "time": "9:00 AM - 7:30 PM"
+      },
+      {
+        "day": "Sunday",
+        "time": "11:00 AM - 7:30 PM"
+      }
+    ],
+    "phone": "(977) 9851277936",
+    "title": "Visit Us",
+    "address": "Suryabinayak, Pandubazar, Bhaktapur, Nepal",
+    "map_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3533.6720998959113!2d85.41950077544247!3d27.66561492733084!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1b52aa08b59b%3A0xb4006ac0101cf3fe!2sSAMANA%20The%20Beauty%20Gallery!5e0!3m2!1sen!2snp!4v1762760502005!5m2!1sen!2snp"
+  },
+  "team": {
+    "title": "Meet Our Team",
+    "members": [
+      {
+        "bio": "Specialist in hair styling and luxury salon experiences.",
+        "name": "Samana",
+        "role": "Lead Stylist",
+        "emoji": "💇‍♀️",
+        "social": {
+          "tiktok": "",
+          "facebook": "",
+          "instagram": ""
+        },
+        "icon_type": "image",
+        "image_key": "samana_card",
+        "image": "https://res.cloudinary.com/dwvjdogr0/image/upload/v1/media/content/clipboard_image_1cf6c161e40945_sl53cz"
+      },
+      {
+        "bio": "Focused on skincare and self-care treatments.",
+        "name": "Ayesha",
+        "role": "Beauty Therapist",
+        "emoji": "👩‍🦰",
+        "social": {
+          "tiktok": "",
+          "facebook": "",
+          "instagram": ""
+        },
+        "icon_type": "emoji",
+        "image_key": null
+      },
+      {
+        "bio": "Focused on skincare and self-care treatments.",
+        "name": "Maria Garcia",
+        "role": "Wellness Expert",
+        "emoji": "👩‍🦳",
+        "social": {
+          "tiktok": "",
+          "facebook": "",
+          "instagram": ""
+        },
+        "icon_type": "emoji",
+        "image_key": null
+      }
+    ]
+  },
+  "appointment": {
+    "title": "Book an Appointment",
+    "subtitle": "Schedule your visit and experience our premium services",
+    "form_title": "Please fill out the form below to book your appointment.",
+    "button_label": "Book Now"
+  },
+
+  "extra_cards": {
+    "title": "Why Book With Us?",
+    "cards": [
+      {
+        "emoji": "⏰",
+        "title": "Flexible Scheduling",
+        "icon_type": "emoji",
+        "image_key": null,
+        "description": "Book at your convenience"
+      },
+      {
+        "emoji": "💳",
+        "title": "Easy Payment",
+        "icon_type": "emoji",
+        "image_key": null,
+        "description": "Multiple payment options"
+      },
+      {
+        "emoji": "✨",
+        "title": "Premium Service",
+        "icon_type": "emoji",
+        "image_key": null,
+        "description": "Expert care guaranteed"
+      }
+    ]
+  },
+  "follow_us": {
+    "title": "Follow Us",
+    "subtitle": "Stay updated with our latest news and offers",
+    "socials": {
+      "instagram": "https://www.instagram.com/samanabeautygallery/",
+      "facebook": "https://www.facebook.com/samanabeautygallery"
+    }
+  }
+}

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { TabType } from '../TabNavigation';
 import parse from 'html-react-parser';
 import { useSalonServices } from '@/lib/queries/useSalonServices';
+import { useDashboardContent } from '@/lib/queries/useDashboardContent';
 
 interface ServicesPageProps {
   onNavigate?: (tab: TabType) => void;
@@ -11,6 +12,7 @@ interface ServicesPageProps {
 
 export default function ServicesPage({ onNavigate }: ServicesPageProps) {
   const { data: services = [], isLoading: loading, error } = useSalonServices();
+  const { data: dashboardContent, isLoading: isDashboardLoading } = useDashboardContent();
   const [selectedService, setSelectedService] = useState<number | null>(null);
 
   const handleScheduleClick = () => {
@@ -24,7 +26,7 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
     }
   };
 
-  if (loading) {
+  if (loading || isDashboardLoading) {
     return <div className="flex items-center justify-center min-h-screen w-full bg-gray-100 text-gray-500 text-xl">Loading services...</div>;
   }
   if (error) {
@@ -34,15 +36,22 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
     return <div className="flex items-center justify-center min-h-screen w-full text-gray-400 text-xl">No services available</div>;
   }
 
+  const servicesContent = dashboardContent?.services || {};
+  const title = servicesContent.title || 'Our Services';
+  const titleParts = title.split(' ');
+  const lastWord = titleParts.pop();
+  const firstPart = titleParts.join(' ');
+  const bottomCardContent = dashboardContent?.bottom_card || {};
+
   return (
     <section className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50 px-4 py-12 sm:py-16 md:py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 sm:mb-12 md:mb-16 text-center">
           <h2 className="mb-3 sm:mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800">
-            Our <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Services</span>
+            {firstPart} <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">{lastWord}</span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-600 px-4">
-            Discover our range of premium beauty and wellness services
+            {servicesContent.subtitle || 'Discover our range of premium beauty and wellness services'}
           </p>
           <div className="mx-auto mt-3 sm:mt-4 h-1 w-16 sm:w-24 rounded-full bg-gradient-to-r from-pink-500 to-purple-600"></div>
         </div>
@@ -110,15 +119,15 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
         {/* Call to Action */}
         <div className="mt-12 sm:mt-16 text-center">
           <div className="mx-auto max-w-2xl rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 p-6 sm:p-8 text-white shadow-xl">
-            <h3 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold">Ready to Transform?</h3>
+            <h3 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold">{}{bottomCardContent.title || "Ready to transform?"}</h3>
             <p className="mb-4 sm:mb-6 text-base sm:text-lg">
-              Book your appointment today and experience the luxury you deserve
+              {bottomCardContent.description || 'Book your appointment today and experience the luxury you deserve'}
             </p>
             <button 
               onClick={handleScheduleClick}
               className="rounded-full bg-white px-6 sm:px-8 py-2 sm:py-3 text-sm sm:text-base font-semibold text-pink-600 transition-all duration-300 hover:scale-110 hover:shadow-lg active:scale-95"
             >
-              Schedule Now
+              {bottomCardContent.cta?.label || 'Schedule Now'}
             </button>
           </div>
         </div>

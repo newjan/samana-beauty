@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Appointment, Banner, ServiceCategory, Service
+from .models import Product, Appointment, Banner, ServiceCategory, Service, DashboardContent, DashboardImage
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -53,4 +53,37 @@ class ServiceSerializer(serializers.ModelSerializer):
         fields = [
             "id", "title", "slug", "description", "price", "duration_minutes", "image", "is_active", "category", "created_at", "updated_at", "additional_info"
         ]
+
+
+class DashboardImageSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DashboardImage
+        fields = ["key", "url", "alt_text"]
+
+    def get_url(self, obj):
+        try:
+            return obj.file.url
+        except Exception:
+            return None
+
+
+class DashboardContentSerializer(serializers.ModelSerializer):
+    images = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DashboardContent
+        fields = ["slug", "data", "images", "updated_at", "created_at"]
+        read_only_fields = ["slug", "images", "updated_at", "created_at"]
+
+    def get_images(self, obj: DashboardContent):
+        # Return map { key: {url, alt_text} }
+        out = {}
+        for img in obj.images.all():
+            out[img.key] = {
+                "url": getattr(img.file, 'url', None),
+                "alt_text": img.alt_text,
+            }
+        return out
 

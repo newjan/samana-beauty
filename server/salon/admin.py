@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Product, Appointment, Banner, ServiceCategory, Service
+from django.db.models import JSONField
+from django_json_widget.widgets import JSONEditorWidget
+from .models import DashboardContent, DashboardImage, Product, Appointment, Banner, ServiceCategory, Service
 
 
 # @admin.register(Product)
@@ -36,3 +38,27 @@ class ServiceAdmin(admin.ModelAdmin):
     list_display = ("title", "category", "price", "is_active")
     list_filter = ("is_active", "category")
     prepopulated_fields = {"slug": ("title",)}
+    
+    
+@admin.register(DashboardContent)
+class DashboardContentAdmin(admin.ModelAdmin):
+    list_display = ("slug", "created_at", "updated_at")
+    readonly_fields = ("slug", "created_at", "updated_at")
+    formfield_overrides = {
+        JSONField: {'widget': JSONEditorWidget},
+    }
+
+
+@admin.register(DashboardImage)
+class DashboardImageAdmin(admin.ModelAdmin):
+    list_display = ("content", "key", "alt_text")
+    list_filter = ("content",)
+    search_fields = ("key", "alt_text")
+    readonly_fields = ("file_preview",)
+
+    def file_preview(self, obj):
+        if obj.file:
+            return obj.file.url
+        return None
+    file_preview.short_description = "File Preview"
+    file_preview.allow_tags = True

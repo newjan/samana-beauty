@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'salon',
     'django_admin_shell',
     'django_ckeditor_5',
+    'django_json_widget'
 ]
 
 MIDDLEWARE = [

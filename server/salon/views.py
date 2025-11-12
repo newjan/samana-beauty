@@ -1,8 +1,9 @@
+import copy
 from rest_framework import viewsets, status, generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import Product, Appointment
-from .serializers import ProductSerializer, AppointmentSerializer
+from .models import Product, Appointment, DashboardContent
+from .serializers import ProductSerializer, AppointmentSerializer, DashboardContentSerializer
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -55,5 +56,43 @@ class BannerListAPIView(generics.ListAPIView):
 class ServiceListAPIView(generics.ListAPIView):
     queryset = Service.objects.filter(is_active=True).select_related("category").order_by("title")
     serializer_class = ServiceSerializer
+
+
+class DashboardContentDetail(generics.RetrieveUpdateAPIView):
+    lookup_field = 'slug'
+    queryset = DashboardContent.objects.prefetch_related('images').all()
+    serializer_class = DashboardContentSerializer
+    http_method_names = ['get', 'patch', 'head', 'options']
+
+
+class DashboardContentView(generics.GenericAPIView):
+    queryset = DashboardContent.objects.prefetch_related('images').all()
+    serializer_class = DashboardContentSerializer
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        
+        response_data = {}
+        for content in queryset:
+            images = {img.key: img.file.url for img in content.images.all() if hasattr(img.file, 'url')}
+            
+            processed_data = copy.deepcopy(content.data)
+
+            def process_data(data, images):
+                if isinstance(data, dict):
+                    if data.get('icon_type') == 'image' and data.get('image_key'):
+                        data['image'] = images.get(data['image_key'])
+
+                    for key in data:
+                        data[key] = process_data(data[key], images)
+                elif isinstance(data, list):
+                    for i, item in enumerate(data):
+                        data[i] = process_data(item, images)
+                return data
+            
+            final_data = process_data(processed_data, images)
+            response_data[content.slug] = final_data
+
+        return Response(response_data)
 
 
