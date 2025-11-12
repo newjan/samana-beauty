@@ -1,61 +1,67 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { useDashboardContent } from '@/lib/queries/useDashboardContent';
+import { useDashboardContent } from "@/lib/queries/useDashboardContent";
+import { useEffect, useRef } from "react";
 
 export default function AboutPage() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const { data, isLoading, isError, error } = useDashboardContent();
+  const { data: dashboardContent, isLoading, error } = useDashboardContent();
 
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-fade-in");
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
     if (sectionRef.current) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('animate-fade-in');
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
       observer.observe(sectionRef.current);
-      return () => observer.disconnect();
     }
-  }, [data]);
+
+    return () => observer.disconnect();
+  }, []);
 
   if (isLoading) {
     return (
-      <section className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-pink-500 border-t-transparent"></div>
-          <p className="text-lg font-semibold text-gray-700">Loading About Us...</p>
-        </div>
-      </section>
+      <div className="flex items-center justify-center min-h-screen w-full bg-gray-100 text-gray-500 text-xl">
+        Loading...
+      </div>
     );
   }
 
-  if (isError) {
+  if (error) {
     return (
-      <section className="flex min-h-screen items-center justify-center bg-red-50">
-        <div className="text-center text-red-700">
-          <h2 className="mb-2 text-2xl font-bold">Oops! Something went wrong.</h2>
-          <p>We couldn't load the page content. Please try again later.</p>
-          {error && <p className="mt-4 text-sm text-red-500">Error: {error.message}</p>}
-        </div>
-      </section>
+      <div className="flex items-center justify-center min-h-screen w-full bg-red-100 text-red-500 text-xl">
+        {error.message}
+      </div>
     );
   }
 
-  const aboutContent = data?.about || {};
-  const { title, our_story, our_mission, why_choose_us, cards } = aboutContent;
+  const aboutContent = dashboardContent?.about || {};
+  const teamContent = dashboardContent?.team || {};
+
+  const title = aboutContent.title || "About Us";
+  const titleParts = title.split(" ");
+  const lastWord = titleParts.pop();
+  const firstPart = titleParts.join(" ");
 
   return (
-    <section ref={sectionRef} className="min-h-screen bg-gradient-to-b from-white to-pink-50 px-4 py-12 sm:py-16 md:py-20 sm:px-6 lg:px-8">
+    <section
+      ref={sectionRef}
+      className="min-h-screen bg-gradient-to-b from-white to-pink-50 px-4 py-12 sm:py-16 md:py-20 sm:px-6 lg:px-8"
+    >
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 sm:mb-12 md:mb-16 text-center">
           <h2 className="mb-3 sm:mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800">
-            {title?.split(' ')[0]} <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">{title?.split(' ')[1]}</span>
+            {firstPart}{" "}
+            <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+              {lastWord}
+            </span>
           </h2>
           <div className="mx-auto h-1 w-16 sm:w-24 rounded-full bg-gradient-to-r from-pink-500 to-purple-600"></div>
         </div>
@@ -63,65 +69,114 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 gap-6 sm:gap-8 md:gap-12 lg:grid-cols-2">
           {/* Story Section */}
           <div className="space-y-4 sm:space-y-6">
-            <div className="rounded-2xl bg-white p-6 sm:p-8 shadow-lg">
-              <h3 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold text-gray-800">{our_story?.title}</h3>
-              {our_story?.content?.split('\n').map((paragraph: string, i: number) => (
-                <p key={i} className="mb-3 sm:mb-4 text-base sm:text-lg leading-relaxed text-gray-600">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
+            {aboutContent.our_story && (
+              <div className="rounded-2xl bg-white p-6 sm:p-8 shadow-lg">
+                <h3 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold text-gray-800">
+                  {aboutContent.our_story.title}
+                </h3>
+                {aboutContent.our_story.content
+                  .split("\n")
+                  .map((paragraph: string, index: number) => (
+                    <p
+                      key={index}
+                      className="text-base sm:text-lg leading-relaxed text-gray-600 mb-3"
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
+              </div>
+            )}
 
-            <div className="rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 p-6 sm:p-8 text-white shadow-lg">
-              <h3 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold">{our_mission?.title}</h3>
-              <p className="text-base sm:text-lg leading-relaxed">
-                {our_mission?.content}
-              </p>
-            </div>
+            {aboutContent.our_mission && (
+              <div className="rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 p-6 sm:p-8 text-white shadow-lg">
+                <h3 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold">
+                  {aboutContent.our_mission.title}
+                </h3>
+                <p className="text-base sm:text-lg leading-relaxed">
+                  {aboutContent.our_mission.content}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Values Section */}
           <div className="space-y-4 sm:space-y-6">
-            <div className="grid grid-cols-2 gap-3 sm:gap-4">
-              {cards?.map((value: any, index: number) => (
-                <div
-                  key={index}
-                  className="group rounded-xl bg-white p-4 sm:p-6 text-center shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl"
-                >
-                  <div className="mb-2 sm:mb-3 text-3xl sm:text-4xl">{value.emoji}</div>
-                  <h4 className="mb-1 sm:mb-2 text-sm sm:text-base font-bold text-gray-800">{value.title}</h4>
-                  <p className="text-xs sm:text-sm text-gray-600">{value.description}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="rounded-2xl bg-white p-6 sm:p-8 shadow-lg">
-              <h3 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold text-gray-800">{why_choose_us?.title}</h3>
-              <ul className="space-y-2 sm:space-y-3">
-                {why_choose_us?.points?.map((item: string, index: number) => (
-                  <li key={index} className="flex items-start sm:items-center space-x-2 sm:space-x-3 text-sm sm:text-base md:text-lg text-gray-600">
-                    <span className="text-pink-500 flex-shrink-0 mt-1 sm:mt-0">✓</span>
-                    <span>{item}</span>
-                  </li>
+            {aboutContent.cards && (
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                {aboutContent.cards.map((value: any, index: number) => (
+                  <div
+                    key={index}
+                    className="group rounded-xl bg-white p-4 sm:p-6 text-center shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                  >
+                    <div className="mb-2 sm:mb-3 text-3xl sm:text-4xl">
+                      {value.emoji}
+                    </div>
+                    <h4 className="mb-1 sm:mb-2 text-sm sm:text-base font-bold text-gray-800">
+                      {value.title}
+                    </h4>
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      {value.description}
+                    </p>
+                  </div>
                 ))}
-              </ul>
-            </div>
+              </div>
+            )}
+
+            {aboutContent.why_choose_us && (
+              <div className="rounded-2xl bg-white p-6 sm:p-8 shadow-lg">
+                <h3 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold text-gray-800">
+                  {aboutContent.why_choose_us.title}
+                </h3>
+                <ul className="space-y-2 sm:space-y-3">
+                  {aboutContent.why_choose_us.points.map(
+                    (item: string, index: number) => (
+                      <li
+                        key={index}
+                        className="flex items-start sm:items-center space-x-2 sm:space-x-3 text-sm sm:text-base md:text-lg text-gray-600"
+                      >
+                        <span className="text-pink-500 flex-shrink-0 mt-1 sm:mt-0">
+                          ✓
+                        </span>
+                        <span>{item}</span>
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Team Section - Assuming team data is also part of the overall dashboard content */}
-        {data?.team && (
+        {/* Team Section */}
+        {teamContent.members && (
           <div className="mt-12 sm:mt-16 md:mt-20">
-            <h3 className="mb-8 sm:mb-12 text-center text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">{data.team.title}</h3>
+            <h3 className="mb-8 sm:mb-12 text-center text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">
+              {teamContent.title}
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {data.team.members?.map((member: any, index: number) => (
+              {teamContent.members.map((member: any, index: number) => (
                 <div
                   key={index}
                   className="group rounded-2xl bg-white p-5 sm:p-6 text-center shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
                 >
-                  <div className="mb-3 sm:mb-4 text-5xl sm:text-6xl">{member.emoji}</div>
-                  <h4 className="mb-2 text-lg sm:text-xl font-bold text-gray-800">{member.name}</h4>
-                  <p className="text-sm sm:text-base text-gray-600">{member.role}</p>
+                  <div className="mb-3 sm:mb-4 text-5xl sm:text-6xl">
+                    {member.icon_type === "image" && member.image ? (
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        className="w-24 h-24 rounded-full mx-auto object-cover"
+                      />
+                    ) : (
+                      member.emoji
+                    )}
+                  </div>
+                  <h4 className="mb-2 text-lg sm:text-xl font-bold text-gray-800">
+                    {member.name}
+                  </h4>
+                  <p className="text-sm sm:text-base text-gray-600">
+                    {member.role}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-2">{member.bio}</p>
                 </div>
               ))}
             </div>
@@ -131,4 +186,3 @@ export default function AboutPage() {
     </section>
   );
 }
-
