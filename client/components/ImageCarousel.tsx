@@ -22,47 +22,23 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
   const { data: carouselImages = [], isLoading: loading, error } = useBanners();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [progress, setProgress] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const carouselRef = useRef<HTMLDivElement>(null);
   const autoPlayTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const animationFrameRef = useRef<number | null>(null);
 
-  // Simplified auto-play logic
+  // Consistent auto-play logic using a simple 5s timer
   useEffect(() => {
     if (!isAutoPlaying || carouselImages.length === 0) return;
 
-    setProgress(0);
-
-    // Animate progress bar
-    const startTime = Date.now();
-    const duration = 5000; // 5 seconds per slide
-    let isCancelled = false;
-
-    const animateProgress = () => {
-      if (isCancelled) return;
-
-      const elapsed = Date.now() - startTime;
-      const newProgress = Math.min((elapsed / duration) * 100, 100);
-      
-      setProgress(newProgress);
-
-      if (elapsed < duration) {
-        animationFrameRef.current = requestAnimationFrame(animateProgress);
-      } else {
-        // Move to next slide
-        setCurrentIndex((prev) => carouselImages.length > 0 ? (prev + 1) % carouselImages.length : 0);
-      }
-    };
-
-    animationFrameRef.current = requestAnimationFrame(animateProgress);
+    if (autoPlayTimeoutRef.current) {
+      clearTimeout(autoPlayTimeoutRef.current);
+    }
+    autoPlayTimeoutRef.current = setTimeout(() => {
+      setCurrentIndex((prev) => carouselImages.length > 0 ? (prev + 1) % carouselImages.length : 0);
+    }, 5000);
 
     return () => {
-      isCancelled = true;
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-        animationFrameRef.current = null;
-      }
       if (autoPlayTimeoutRef.current) {
         clearTimeout(autoPlayTimeoutRef.current);
         autoPlayTimeoutRef.current = null;
@@ -91,10 +67,9 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
   const goToSlide = (index: number) => {
     if (carouselImages.length === 0) return;
     setCurrentIndex(index);
-    setProgress(0);
     setIsAutoPlaying(false);
     
-    // Resume autoplay after 10 seconds
+    // Resume autoplay after 5 seconds
     if (autoPlayTimeoutRef.current) {
       clearTimeout(autoPlayTimeoutRef.current);
     }
@@ -106,7 +81,6 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
   const nextSlide = () => {
     if (carouselImages.length === 0) return;
     setCurrentIndex((prev) => (prev + 1) % carouselImages.length);
-    setProgress(0);
     setIsAutoPlaying(false);
     
     if (autoPlayTimeoutRef.current) {
@@ -120,7 +94,6 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
   const prevSlide = () => {
     if (carouselImages.length === 0) return;
     setCurrentIndex((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
-    setProgress(0);
     setIsAutoPlaying(false);
     
     if (autoPlayTimeoutRef.current) {
@@ -173,9 +146,11 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
     <div 
       ref={carouselRef}
       className="relative min-h-screen w-full overflow-hidden"
-      onMouseEnter={() => setIsAutoPlaying(false)}
-      onMouseLeave={() => setIsAutoPlaying(true)}
     >
+      {/* Progress bar (CSS-animated, 5s per slide) */}
+      <div className="absolute top-0 left-0 right-0 z-30 h-1 bg-white/20 overflow-hidden">
+        <div key={currentIndex} className="h-full bg-gradient-to-r from-pink-500 to-purple-600 animate-carousel-progress" />
+      </div>
       {/* Carousel Images */}
       <div className="relative h-screen w-full">
         {carouselImages.map((image, index) => (
@@ -406,14 +381,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
         </svg>
       </button>
 
-      {/* Progress Bar */}
-      <div className="absolute top-0 left-0 z-30 h-1 w-full bg-white/20">
-        <div 
-          className="h-full bg-gradient-to-r from-pink-500 to-purple-600 transition-all duration-100 ease-linear"
-          style={{ width: `${progress}%` }}
-        ></div>
-      </div>
-
+      
       {/* Indicators */}
       <div className="absolute bottom-4 sm:bottom-6 left-1/2 z-30 flex -translate-x-1/2 space-x-2 sm:space-x-3">
         {carouselImages.map((_, index) => (

@@ -26,24 +26,24 @@ export default function TabNavigation({ activeTab, onTabChange }: TabNavigationP
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200 h-17">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between py-3 md:py-4">
+        <div className="flex items-center justify-between py-2 md:py-2">
           {/* Logo */}
           <div className="flex items-center space-x-2 min-w-0">
             <Image 
               src="/samana-logo.png" 
               alt="Samana Beauty Logo" 
-              width={50}
-              height={50} 
+              width={40}
+              height={40} 
               className="rounded-full object-contain flex-shrink-0 hidden sm:block" 
               priority 
             />
             <Image 
               src="/samana-logo.png" 
               alt="Samana Beauty Logo" 
-              width={40} 
-              height={40} 
+              width={32} 
+              height={32} 
               className="rounded-full object-contain flex-shrink-0 sm:hidden" 
               priority 
             />

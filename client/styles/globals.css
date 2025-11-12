@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* Global zoom-out via root font-size (affects rem-based sizing) */
+html {
+  height: 100%;
+  font-size: 85%; /* ~15% overall size reduction */
+}
+
+body { height: 100%; }
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -68,6 +76,18 @@ body {
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradient 3s ease infinite;
+}
+
+/* Carousel progress bar animation (5s per slide) */
+@keyframes carousel-progress {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0%); }
+}
+
+.animate-carousel-progress {
+  animation: carousel-progress 5s linear forwards;
+  transform: translateX(-100%);
+  will-change: transform;
 }
 
 @keyframes slide-in {

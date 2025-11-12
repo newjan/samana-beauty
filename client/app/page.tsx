@@ -17,6 +17,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 via-white to-purple-50">
       <TabNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+      {/* Unscaled spacer equal to nav height (approx 56px). Adjust if you tweak nav size. */}
+      <div style={{ height: 57 }} />
       <main>
         <ScrollableHomePage 
           activeTab={activeTab} 
