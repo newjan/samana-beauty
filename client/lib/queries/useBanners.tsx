@@ -4,6 +4,7 @@ import { fetchBanners } from "../api";
 export function useBanners() {
   return useQuery({
     queryKey: ["banners"],
-    queryFn: fetchBanners
+    queryFn: fetchBanners,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }

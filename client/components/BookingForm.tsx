@@ -1,12 +1,15 @@
-'use client';
-
 import { useState } from 'react';
 import { createAppointment, Appointment } from '@/lib/api';
 import { useSalonServices } from '@/lib/queries/useSalonServices';
+import { useDashboardContent } from '@/lib/queries/useDashboardContent';
+import BookingFormSkeleton from './skeletons/BookingFormSkeleton';
 
 export default function BookingForm() {
   const { data: services = [] } = useSalonServices();
   const serviceTypes = services.map((s: any) => s.title);
+
+  // Fetch dashboard content for the 'appointment' slug
+  const { data: dashboardContent, isLoading: isDashboardContentLoading, isError: isDashboardContentError } = useDashboardContent();
 
   const [formData, setFormData] = useState<Omit<Appointment, 'id' | 'status' | 'created_at' | 'updated_at'>>({
     customer_name: '',
@@ -53,9 +56,20 @@ export default function BookingForm() {
     }
   };
 
+  if (isDashboardContentLoading) {
+    return <BookingFormSkeleton />;
+  }
+
+  if (isDashboardContentError || !dashboardContent || !dashboardContent.appointment) {
+    return <div>Error loading form content.</div>;
+  }
+
+  const { title, form_title, button_label } = dashboardContent.appointment || {};
+
   return (
     <form onSubmit={handleSubmit} className="mx-auto w-full max-w-2xl space-y-4 sm:space-y-6 rounded-lg bg-white p-4 sm:p-6 md:p-8 shadow-lg">
-      <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl font-bold text-gray-800">Book Your Appointment</h2>
+      <h2 className="mb-4 sm:mb-6 text-2xl sm:text-3xl font-bold text-gray-800">{title || 'Book Your Appointment'}</h2>
+      <p className="text-gray-600 mb-6">{form_title || 'Please fill out the form below to book your appointment.'}</p>
       
       <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
         <div className="relative">
@@ -238,7 +252,7 @@ export default function BookingForm() {
         disabled={isSubmitting}
         className="w-full rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-semibold text-white transition-all duration-300 hover:from-pink-600 hover:to-purple-700 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
       >
-        {isSubmitting ? 'Booking...' : 'Book Appointment'}
+        {isSubmitting ? 'Booking...' : button_label || 'Book Appointment'}
       </button>
     </form>
   );
