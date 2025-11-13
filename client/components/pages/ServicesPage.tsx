@@ -5,6 +5,7 @@ import { TabType } from '../TabNavigation';
 import parse from 'html-react-parser';
 import { useSalonServices } from '@/lib/queries/useSalonServices';
 import { useDashboardContent } from '@/lib/queries/useDashboardContent';
+import ServicesPageSkeleton from '../skeletons/ServicesPageSkeleton';
 
 interface ServicesPageProps {
   onNavigate?: (tab: TabType) => void;
@@ -27,7 +28,7 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
   };
 
   if (loading || isDashboardLoading) {
-    return <div className="flex items-center justify-center min-h-screen w-full bg-gray-100 text-gray-500 text-xl">Loading services...</div>;
+    return <ServicesPageSkeleton />;
   }
   if (error) {
     return <div className="flex items-center justify-center min-h-screen w-full bg-red-100 text-red-500 text-xl">{error.message}</div>;

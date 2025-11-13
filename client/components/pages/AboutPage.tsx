@@ -2,6 +2,7 @@
 
 import { useDashboardContent } from "@/lib/queries/useDashboardContent";
 import { useEffect, useRef } from "react";
+import AboutPageSkeleton from "../skeletons/AboutPageSkeleton"; // new import
 
 export default function AboutPage() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -27,11 +28,7 @@ export default function AboutPage() {
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen w-full bg-gray-100 text-gray-500 text-xl">
-        Loading...
-      </div>
-    );
+    return <AboutPageSkeleton />; // updated
   }
 
   if (error) {

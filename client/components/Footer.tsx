@@ -4,6 +4,7 @@ import { useSalonServices } from '@/lib/queries/useSalonServices';
 import { useDashboardContent } from '@/lib/queries/useDashboardContent';
 import { TabType } from './TabNavigation';
 import Image from 'next/image';
+import SkeletonLoader from './SkeletonLoader';
 
 interface FooterProps {
   onNavigate?: (tab: TabType) => void;
@@ -96,7 +97,13 @@ export default function Footer({ onNavigate }: FooterProps) {
                   <li key={service.id}>{service.title}</li>
                 ))
               ) : (
-                <li>Loading...</li>
+                <>
+                  {[...Array(5)].map((_, i) => (
+                    <li key={i}>
+                      <SkeletonLoader className="h-4 w-3/4" />
+                    </li>
+                  ))}
+                </>
               )}
             </ul>
           </div>
@@ -105,30 +112,53 @@ export default function Footer({ onNavigate }: FooterProps) {
           <div>
             <h4 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold">Contact Us</h4>
             <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-gray-400">
-              <li className="flex items-start space-x-2 sm:space-x-3">
-                <span className="flex-shrink-0">📍</span>
-                <span className="min-w-0">{contactInfo.address}</span>
-              </li>
-              <li className="flex items-center space-x-2 sm:space-x-3">
-                <span className="flex-shrink-0">📞</span>
-                <a href={`tel:${contactInfo.phone}`} className="hover:text-pink-400 transition-colors break-all">
-                  {contactInfo.phone}
-                </a>
-              </li>
-              <li className="flex items-center space-x-2 sm:space-x-3">
-                <span className="flex-shrink-0">✉️</span>
-                <a href={`mailto:${contactInfo.email}`} className="hover:text-pink-400 transition-colors break-all text-xs sm:text-sm">
-                  {contactInfo.email}
-                </a>
-              </li>
-              <li className="flex items-start space-x-2 sm:space-x-3">
-                <span className="flex-shrink-0">🕒</span>
-                <span className="min-w-0">
-                  {contactInfo.hours?.map((h: any, i: number) => (
-                    <span key={i}>{h.day}: {h.time}<br /></span>
-                  ))}
-                </span>
-              </li>
+              {dashboardContent ? (
+                <>
+                  <li className="flex items-start space-x-2 sm:space-x-3">
+                    <span className="flex-shrink-0">📍</span>
+                    <span className="min-w-0">{contactInfo.address}</span>
+                  </li>
+                  <li className="flex items-center space-x-2 sm:space-x-3">
+                    <span className="flex-shrink-0">📞</span>
+                    <a href={`tel:${contactInfo.phone}`} className="hover:text-pink-400 transition-colors break-all">
+                      {contactInfo.phone}
+                    </a>
+                  </li>
+                  <li className="flex items-center space-x-2 sm:space-x-3">
+                    <span className="flex-shrink-0">✉️</span>
+                    <a href={`mailto:${contactInfo.email}`} className="hover:text-pink-400 transition-colors break-all text-xs sm:text-sm">
+                      {contactInfo.email}
+                    </a>
+                  </li>
+                  <li className="flex items-start space-x-2 sm:space-x-3">
+                    <span className="flex-shrink-0">🕒</span>
+                    <span className="min-w-0">
+                      {contactInfo.hours?.map((h: any, i: number) => (
+                        <span key={i}>{h.day}: {h.time}<br /></span>
+                      ))}
+                    </span>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="flex items-start space-x-2 sm:space-x-3">
+                    <span className="flex-shrink-0">📍</span>
+                    <SkeletonLoader className="h-4 w-3/4" />
+                  </li>
+                  <li className="flex items-center space-x-2 sm:space-x-3">
+                    <span className="flex-shrink-0">📞</span>
+                    <SkeletonLoader className="h-4 w-1/2" />
+                  </li>
+                  <li className="flex items-center space-x-2 sm:space-x-3">
+                    <span className="flex-shrink-0">✉️</span>
+                    <SkeletonLoader className="h-4 w-2/3" />
+                  </li>
+                  <li className="flex items-start space-x-2 sm:space-x-3">
+                    <span className="flex-shrink-0">🕒</span>
+                    <SkeletonLoader className="h-4 w-full" />
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </div>

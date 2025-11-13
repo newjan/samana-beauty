@@ -3,19 +3,13 @@
 import BookingForm from '../BookingForm';
 import { useDashboardContent } from '@/lib/queries/useDashboardContent';
 import Image from 'next/image';
+import AppointmentPageSkeleton from '../skeletons/AppointmentPageSkeleton';
 
 export default function AppointmentPage() {
   const { data, isLoading, isError, error } = useDashboardContent();
 
   if (isLoading) {
-    return (
-      <section className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-pink-500 border-t-transparent"></div>
-          <p className="text-lg font-semibold text-gray-700">Loading Appointment Page...</p>
-        </div>
-      </section>
-    );
+    return <AppointmentPageSkeleton />;
   }
 
   if (isError) {

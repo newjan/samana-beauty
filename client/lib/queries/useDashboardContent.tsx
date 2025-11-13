@@ -1,9 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
-import { fetchDashboardContent } from '../api';
+import { useQuery } from "@tanstack/react-query";
+import { fetchDashboardContent } from "../api";
 
 export function useDashboardContent() {
   return useQuery({
-    queryKey: ['dashboardContent'],
+    queryKey: ["dashboardContent"],
     queryFn: fetchDashboardContent,
+    staleTime: 2 * 60 * 1000,
   });
 }

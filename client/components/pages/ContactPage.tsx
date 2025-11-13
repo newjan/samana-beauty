@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { SiFacebook, SiInstagram } from "react-icons/si";
 import { useDashboardContent } from "@/lib/queries/useDashboardContent";
+import ContactPageSkeleton from "../skeletons/ContactPageSkeleton";
 
 export default function ContactPage() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -48,16 +49,7 @@ export default function ContactPage() {
   };
 
   if (isLoading) {
-    return (
-      <section className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-pink-500 border-t-transparent"></div>
-          <p className="text-lg font-semibold text-gray-700">
-            Loading Contact Page...
-          </p>
-        </div>
-      </section>
-    );
+    return <ContactPageSkeleton />;
   }
 
   if (isError) {

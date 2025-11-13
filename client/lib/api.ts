@@ -2,6 +2,51 @@ import { useQuery } from '@tanstack/react-query';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
+// Helper function for caching
+async function createCachedFetcher<T>(
+  localStorageKey: string, 
+  fetchFunction: () => Promise<T>
+): Promise<T> {
+  // Try to get data from localStorage first
+  if (typeof window !== 'undefined') {
+    const cachedData = localStorage.getItem(localStorageKey);
+    
+    if (cachedData) {
+      try {
+        const parsedData = JSON.parse(cachedData) as T;
+        
+        // Start background fetch (don't await)
+        fetchFunction()
+          .then((freshData) => {
+            localStorage.setItem(localStorageKey, JSON.stringify(freshData));
+          })
+          .catch((e) => {
+            console.error(`Background fetch failed for ${localStorageKey}:`, e);
+          });
+        
+        // Return cached data immediately
+        return parsedData;
+      } catch (e) {
+        console.error(`Error parsing cached data for ${localStorageKey}:`, e);
+        // If parsing fails, proceed to fetch from API
+      }
+    }
+  }
+
+  // No cache available - fetch data from the API
+  const data = await fetchFunction();
+
+  // Store new data in localStorage
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(localStorageKey, JSON.stringify(data));
+    } catch (e) {
+      console.error(`Error saving data to localStorage for ${localStorageKey}:`, e);
+    }
+  }
+
+  return data;
+}
 export interface Product {
   id: number;
   name: string;
@@ -65,21 +110,23 @@ export interface Service {
 }
 
 export async function fetchProducts(): Promise<Product[]> {
-  const response = await fetch(`${API_BASE_URL}/products/`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch products');
-  }
-  const data = await response.json();
-  // Handle paginated response from Django REST Framework
-  // If the response has a 'results' property, it's paginated
-  if (Array.isArray(data)) {
-    return data;
-  }
-  if (data.results && Array.isArray(data.results)) {
-    return data.results;
-  }
-  // Fallback: return empty array if unexpected format
-  return [];
+  return createCachedFetcher('api_cache_products', async () => {
+    const response = await fetch(`${API_BASE_URL}/products/`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch products');
+    }
+    const data = await response.json();
+    // Handle paginated response from Django REST Framework
+    // If the response has a 'results' property, it's paginated
+    if (Array.isArray(data)) {
+      return data;
+    }
+    if (data.results && Array.isArray(data.results)) {
+      return data.results;
+    }
+    // Fallback: return empty array if unexpected format
+    return [];
+  });
 }
 
 export async function fetchProduct(id: number): Promise<Product> {
@@ -106,33 +153,37 @@ export async function createAppointment(appointment: Appointment): Promise<Appoi
 }
 
 export async function fetchBanners(): Promise<Banner[]> {
-  const response = await fetch(`${API_BASE_URL}/banners/`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch banners');
-  }
-  const data = await response.json();
-  if (Array.isArray(data)) {
-    return data;
-  }
-  if (data.results && Array.isArray(data.results)) {
-    return data.results;
-  }
-  return [];
+  return createCachedFetcher('api_cache_banners', async () => {
+    const response = await fetch(`${API_BASE_URL}/banners/`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch banners');
+    }
+    const data = await response.json();
+    if (Array.isArray(data)) {
+      return data;
+    }
+    if (data.results && Array.isArray(data.results)) {
+      return data.results;
+    }
+    return [];
+  });
 }
 
 export async function fetchSalonServices(): Promise<Service[]> {
-  const response = await fetch(`${API_BASE_URL}/services/`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch services');
-  }
-  const data = await response.json();
-  if (Array.isArray(data)) {
-    return data;
-  }
-  if (data.results && Array.isArray(data.results)) {
-    return data.results;
-  }
-  return [];
+  return createCachedFetcher('api_cache_services', async () => {
+    const response = await fetch(`${API_BASE_URL}/services/`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch services');
+    }
+    const data = await response.json();
+    if (Array.isArray(data)) {
+      return data;
+    }
+    if (data.results && Array.isArray(data.results)) {
+      return data.results;
+    }
+    return [];
+  });
 }
 
 export interface DashboardContent {
@@ -140,9 +191,11 @@ export interface DashboardContent {
 }
 
 export async function fetchDashboardContent(): Promise<DashboardContent> {
-  const response = await fetch(`${API_BASE_URL}/dashboard-content/all/`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch dashboard content');
-  }
-  return response.json();
+  return createCachedFetcher('api_cache_dashboard_content', async () => {
+    const response = await fetch(`${API_BASE_URL}/dashboard-content/all/`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch dashboard content');
+    }
+    return response.json();
+  });
 }
