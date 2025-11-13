@@ -4,7 +4,6 @@ import { fetchDashboardContent } from "../api";
 export function useDashboardContent() {
   return useQuery({
     queryKey: ["dashboardContent"],
-    queryFn: fetchDashboardContent,
-    staleTime: 2 * 60 * 1000,
+    queryFn: fetchDashboardContent
   });
 }
