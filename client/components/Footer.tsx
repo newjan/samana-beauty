@@ -26,8 +26,9 @@ export default function Footer({ onNavigate }: FooterProps) {
     }
   };
 
-  const contactInfo = dashboardContent?.contact || {};
-  const teamInfo = dashboardContent?.team || {};
+  const contactInfo = dashboardContent?.contact;
+  const teamInfo = dashboardContent?.team;
+  const socialLinks = dashboardContent?.follow_us;
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -121,24 +122,24 @@ export default function Footer({ onNavigate }: FooterProps) {
                 <>
                   <li className="flex items-start space-x-2 sm:space-x-3">
                     <span className="flex-shrink-0">📍</span>
-                    <span className="min-w-0">{contactInfo.address}</span>
+                    <span className="min-w-0">{contactInfo?.address}</span>
                   </li>
                   <li className="flex items-center space-x-2 sm:space-x-3">
                     <span className="flex-shrink-0">📞</span>
-                    <a href={`tel:${contactInfo.phone}`} className="hover:text-pink-400 transition-colors break-all">
-                      {contactInfo.phone}
+                    <a href={`tel:${contactInfo?.phone}`} className="hover:text-pink-400 transition-colors break-all">
+                      {contactInfo?.phone}
                     </a>
                   </li>
                   <li className="flex items-center space-x-2 sm:space-x-3">
                     <span className="flex-shrink-0">✉️</span>
-                    <a href={`mailto:${contactInfo.email}`} className="hover:text-pink-400 transition-colors break-all text-xs sm:text-sm">
-                      {contactInfo.email}
+                    <a href={`mailto:${contactInfo?.email}`} className="hover:text-pink-400 transition-colors break-all text-xs sm:text-sm">
+                      {contactInfo?.email}
                     </a>
                   </li>
                   <li className="flex items-start space-x-2 sm:space-x-3">
                     <span className="flex-shrink-0">🕒</span>
                     <span className="min-w-0">
-                      {contactInfo.hours?.map((h: ContactHour, i: number) => (
+                      {contactInfo?.hours?.map((h: ContactHour, i: number) => (
                         <span key={i}>{h.day}: {h.time}<br /></span>
                       ))}
                     </span>

@@ -32,10 +32,10 @@ export default function AppointmentPage() {
     );
   }
 
-  const appointmentContent = data?.appointment || {};
-  const extraCardsContent = data?.extra_cards || {};
+  const appointmentContent = data?.appointment;
+  const extraCardsContent = data?.extra_cards;
 
-  const title = appointmentContent.title || 'Book Your Appointment';
+  const title = appointmentContent?.title || 'Book Your Appointment';
   const titleParts = title.split(' ');
   const lastWord = titleParts.pop();
   const firstPart = titleParts.join(' ');
@@ -48,7 +48,7 @@ export default function AppointmentPage() {
             {firstPart} <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">{lastWord}</span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-600 px-4">
-            {appointmentContent.subtitle || 'Schedule your visit and experience our premium services'}
+            {appointmentContent?.subtitle || 'Schedule your visit and experience our premium services'}
           </p>
           <div className="mx-auto mt-3 sm:mt-4 h-1 w-16 sm:w-24 rounded-full bg-gradient-to-r from-pink-500 to-purple-600"></div>
         </div>
@@ -60,7 +60,7 @@ export default function AppointmentPage() {
         </div>
 
         {/* Additional Info */}
-        {extraCardsContent.cards && (
+        {extraCardsContent?.cards && (
           <div className="mt-12 sm:mt-16">
             {extraCardsContent.title && (
               <h3 className="mb-8 text-center text-2xl sm:text-3xl font-bold text-gray-800">

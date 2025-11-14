@@ -4,21 +4,7 @@ import { useDashboardContent } from "@/lib/queries/useDashboardContent";
 import { useEffect, useRef } from "react";
 import AboutPageSkeleton from "../skeletons/AboutPageSkeleton"; // new import
 import Image from "next/image";
-
-interface AboutCardValue {
-  emoji: string;
-  title: string;
-  description: string;
-}
-
-interface TeamMember {
-  icon_type: string;
-  image?: string;
-  emoji?: string;
-  name: string;
-  role: string;
-  bio: string;
-}
+import { FeatureCard, TeamMember } from "@/lib/api";
 
 export default function AboutPage() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -55,10 +41,10 @@ export default function AboutPage() {
     );
   }
 
-  const aboutContent = dashboardContent?.about || {};
-  const teamContent = dashboardContent?.team || {};
+  const aboutContent = dashboardContent?.about;
+  const teamContent = dashboardContent?.team;
 
-  const title = aboutContent.title || "About Us";
+  const title = aboutContent?.title || "About Us";
   const titleParts = title.split(" ");
   const lastWord = titleParts.pop();
   const firstPart = titleParts.join(" ");
@@ -82,7 +68,7 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 gap-6 sm:gap-8 md:gap-12 lg:grid-cols-2">
           {/* Story Section */}
           <div className="space-y-4 sm:space-y-6">
-            {aboutContent.our_story && (
+            {aboutContent?.our_story && (
               <div className="rounded-2xl bg-white p-6 sm:p-8 shadow-lg">
                 <h3 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold text-gray-800">
                   {aboutContent.our_story.title}
@@ -100,7 +86,7 @@ export default function AboutPage() {
               </div>
             )}
 
-            {aboutContent.our_mission && (
+            {aboutContent?.our_mission && (
               <div className="rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 p-6 sm:p-8 text-white shadow-lg">
                 <h3 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold">
                   {aboutContent.our_mission.title}
@@ -114,9 +100,9 @@ export default function AboutPage() {
 
           {/* Values Section */}
           <div className="space-y-4 sm:space-y-6">
-            {aboutContent.cards && (
+            {aboutContent?.cards && (
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                {aboutContent.cards.map((value: AboutCardValue, index: number) => (
+                {aboutContent.cards.map((value: FeatureCard, index: number) => (
                   <div
                     key={index}
                     className="group rounded-xl bg-white p-4 sm:p-6 text-center shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl"
@@ -135,7 +121,7 @@ export default function AboutPage() {
               </div>
             )}
 
-            {aboutContent.why_choose_us && (
+            {aboutContent?.why_choose_us && (
               <div className="rounded-2xl bg-white p-6 sm:p-8 shadow-lg">
                 <h3 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold text-gray-800">
                   {aboutContent.why_choose_us.title}
@@ -161,7 +147,7 @@ export default function AboutPage() {
         </div>
 
         {/* Team Section */}
-        {teamContent.members && (
+        {teamContent?.members && (
           <div className="mt-12 sm:mt-16 md:mt-20">
             <h3 className="mb-8 sm:mb-12 text-center text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">
               {teamContent.title}

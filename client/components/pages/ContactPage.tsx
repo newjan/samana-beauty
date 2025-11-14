@@ -51,9 +51,9 @@ export default function ContactPage() {
     );
   }
 
-  const contactContent = data?.contact || {};
-  const { title, address, phone, email, hours, map_url } = contactContent;
-  const socialContent = data?.follow_us || {};
+  const contactContent = data?.contact;
+  const { title, address, phone, email, hours, map_url } = contactContent || {};
+  const socialContent = data?.follow_us;
 
   return (
     <section
