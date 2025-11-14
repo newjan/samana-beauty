@@ -10,6 +10,7 @@ django-cloudinary-storage==0.3.0
 django-cors-headers==4.9.0
 django-js-asset==3.1.2
 django-json-widget==2.1.0
+django-unfold==0.71.0
 djangorestframework==3.16.1
 gunicorn==23.0.0
 idna==3.11
