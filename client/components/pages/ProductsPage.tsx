@@ -1,72 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { fetchProducts, Product } from "@/lib/api";
 import ProductCard from "../ProductCard";
 import ProductCardSkeleton from "../ProductCardSkeleton";
+import { useRouter } from 'next/navigation'; 
+import { useProducts } from '@/lib/queries/useProducts'; // Import useProducts
+import { Product } from '@/lib/api'; // Import Product type
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [autoPlay, setAutoPlay] = useState(true);
+  const { data: featuredProducts = [], isLoading, isError, error } = useProducts(true); // Fetch only featured products
 
-  useEffect(() => {
-    async function loadProducts() {
-      try {
-        const data = await fetchProducts();
-        if (Array.isArray(data)) {
-          setProducts(data);
-        } else {
-          console.error("Expected array but got:", data);
-          setProducts([]);
-        }
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load products"
-        );
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadProducts();
-  }, []);
-
-  useEffect(() => {
-    if (autoPlay && products.length > 0) {
-      const interval = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % products.length);
-      }, 4000);
-      return () => clearInterval(interval);
-    }
-  }, [autoPlay, products.length]);
-
-  // ... (prevSlide, nextSlide, goToSlide functions remain the same) ...
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % products.length);
-    setAutoPlay(false);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + products.length) % products.length);
-    setAutoPlay(false);
-  };
-
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
-    setAutoPlay(false);
-  };
+  const router = useRouter(); // Initialize useRouter
 
   // Helper function to render the main content
-  const renderContent = () => {
+  const renderContent = (skeletonCount: number = 3) => {
     // 1. Loading state: Render skeletons
-    if (loading) {
+    if (isLoading) {
       return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {/* Render 6 skeletons as placeholders */}
-          {Array.from({ length: 3 }).map((_, index) => (
+          {/* Render skeletons as placeholders */}
+          {Array.from({ length: skeletonCount }).map((_, index) => (
             <ProductCardSkeleton key={index} />
           ))}
         </div>
@@ -74,26 +26,26 @@ export default function ProductsPage() {
     }
 
     // 2. Error state: Render an inline error message
-    if (error) {
+    if (isError) {
       return (
         <div className="rounded-lg bg-red-100 p-6 sm:p-8 text-center text-red-800">
           <p className="mb-2 text-xl sm:text-2xl font-semibold">Error loading products</p>
-          <p className="text-sm sm:text-base">{error}</p>
+          <p className="text-sm sm:text-base">{error?.message}</p>
         </div>
       );
     }
 
-    if (products.length === 0) {
+    if (featuredProducts.length === 0) {
       return (
         <div className="rounded-lg bg-gray-100 p-6 sm:p-8 text-center text-gray-600">
-          <p className="text-lg sm:text-xl">No products available at the moment.</p>
+          <p className="text-lg sm:text-xl">No featured products available at the moment.</p>
         </div>
       );
     }
 
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {products.map((product) => (
+        {featuredProducts.map((product: Product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
@@ -116,16 +68,20 @@ export default function ProductsPage() {
           <div className="mx-auto mt-3 sm:mt-4 h-1 w-16 sm:w-24 rounded-full bg-gradient-to-r from-pink-500 to-purple-600"></div>
         </div>
 
-        {/* Featured Products Carousel (unchanged) */}
-        {/* ... */}
-
-        {/* All Products Grid */}
+        {/* Featured Products Section */}
         <div className="mt-12 sm:mt-16">
           <h3 className="mb-6 sm:mb-8 text-center text-2xl sm:text-3xl font-bold text-gray-800">
-            All Products
+            Featured Products
           </h3>
-          {/* Use the renderContent helper to show the correct state */}
-          {renderContent()}
+          {renderContent(6)} {/* Render up to 6 skeletons for featured */}
+          <div className="text-center mt-8">
+            <button
+              onClick={() => router.push('/products')}
+              className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+            >
+              Explore All Products
+            </button>
+          </div>
         </div>
       </div>
     </section>

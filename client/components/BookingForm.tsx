@@ -6,9 +6,7 @@ import BookingFormSkeleton from './skeletons/BookingFormSkeleton';
 
 export default function BookingForm() {
   const { data: services = [] } = useSalonServices();
-  const serviceTypes = services.map((s: any) => s.title);
-
-  // Fetch dashboard content for the 'appointment' slug
+  const serviceTypes = services.map(s => s.title); 
   const { data: dashboardContent, isLoading: isDashboardContentLoading, isError: isDashboardContentError } = useDashboardContent();
 
   const [formData, setFormData] = useState<Omit<Appointment, 'id' | 'status' | 'created_at' | 'updated_at'>>({
@@ -237,7 +235,7 @@ export default function BookingForm() {
 
       {submitStatus === 'success' && (
         <div className="rounded-lg bg-green-100 p-3 sm:p-4 text-sm sm:text-base text-green-800">
-          Appointment booked successfully! We'll contact you soon to confirm.
+          Appointment booked successfully! We&apos;ll contact you soon to confirm.
         </div>
       )}
 

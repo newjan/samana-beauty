@@ -19,7 +19,7 @@ export default function ScrollableHomePage({ onTabChange, activeTab }: Scrollabl
     home: null,
     about: null,
     services: null,
-    // products: null,
+    products: null,
     appointment: null,
     contact: null,
   });
@@ -36,7 +36,6 @@ export default function ScrollableHomePage({ onTabChange, activeTab }: Scrollabl
       return;
     }
 
-    const previousTab = lastActiveTabRef.current;
     lastActiveTabRef.current = activeTab;
 
     // Don't scroll if this change came from manual scrolling
@@ -176,13 +175,13 @@ export default function ScrollableHomePage({ onTabChange, activeTab }: Scrollabl
       </section>
 
       {/* Products Section */}
-      {/* <section
+      <section
         ref={(el) => {sectionsRef.current.products = el}}
         id="products"
         className="scroll-mt-16 sm:scroll-mt-20 md:scroll-mt-18"
       >
         <ProductsPage />
-      </section> */}
+      </section>
 
       {/* Appointment Section */}
       <section

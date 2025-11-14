@@ -1,19 +1,18 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { SiFacebook, SiInstagram } from "react-icons/si";
 import { useDashboardContent } from "@/lib/queries/useDashboardContent";
 import ContactPageSkeleton from "../skeletons/ContactPageSkeleton";
 
+interface ContactHour {
+  day: string;
+  time: string;
+}
+
 export default function ContactPage() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const { data, isLoading, isError, error } = useDashboardContent();
-
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
 
   useEffect(() => {
     if (sectionRef.current) {
@@ -32,22 +31,6 @@ export default function ContactPage() {
     }
   }, [data]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission
-    alert("Thank you for your message! We will get back to you soon.");
-    setFormData({ name: "", email: "", message: "" });
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
   if (isLoading) {
     return <ContactPageSkeleton />;
   }
@@ -59,7 +42,7 @@ export default function ContactPage() {
           <h2 className="mb-2 text-2xl font-bold">
             Oops! Something went wrong.
           </h2>
-          <p>We couldn't load the page content. Please try again later.</p>
+          <p>We couldn&apos;t load the page content. Please try again later.</p>
           {error && (
             <p className="mt-4 text-sm text-red-500">Error: {error.message}</p>
           )}
@@ -70,7 +53,6 @@ export default function ContactPage() {
 
   const contactContent = data?.contact || {};
   const { title, address, phone, email, hours, map_url } = contactContent;
-  const teamContent = data?.team || {};
   const socialContent = data?.follow_us || {};
 
   return (
@@ -87,7 +69,7 @@ export default function ContactPage() {
             </span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-600 px-4">
-            Get in touch with us - we'd love to hear from you!
+            Get in touch with us - we&apos;d love to hear from you!
           </p>
           <div className="mx-auto mt-3 sm:mt-4 h-1 w-16 sm:w-24 rounded-full bg-gradient-to-r from-pink-500 to-purple-600"></div>
         </div>
@@ -164,7 +146,7 @@ export default function ContactPage() {
                   <h4 className="mb-1 text-sm font-semibold text-gray-800">
                     Hours
                   </h4>
-                  {hours?.map((h: any, i: number) => (
+                  {hours?.map((h: ContactHour, i: number) => (
                     <p key={i} className="text-sm text-gray-600">
                       {h.day}: {h.time}
                     </p>

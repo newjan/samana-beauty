@@ -1,5 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 // Helper function for caching
@@ -52,9 +50,10 @@ export interface Product {
   name: string;
   description: string;
   price: string;
-  image_url: string | null;
+  image: string | null;
   category: string;
   in_stock: boolean;
+  is_featured: boolean; // Add this line
   created_at: string;
   updated_at: string;
 }
@@ -109,11 +108,12 @@ export interface Service {
   additional_info?: string; // CKEditor5 HTML
 }
 
-export async function fetchProducts(): Promise<Product[]> {
-  return createCachedFetcher('api_cache_products', async () => {
-    const response = await fetch(`${API_BASE_URL}/products/`);
+export async function fetchProducts(isFeatured: boolean = false): Promise<Product[]> {
+  const endpoint = isFeatured ? 'products/featured/' : 'products/';
+  return createCachedFetcher(`api_cache_products_${isFeatured ? 'featured' : 'all'}`, async () => {
+    const response = await fetch(`${API_BASE_URL}/${endpoint}`);
     if (!response.ok) {
-      throw new Error('Failed to fetch products');
+      throw new Error(`Failed to fetch ${isFeatured ? 'featured ' : ''}products`);
     }
     const data = await response.json();
     // Handle paginated response from Django REST Framework
@@ -186,8 +186,128 @@ export async function fetchSalonServices(): Promise<Service[]> {
   });
 }
 
+export interface FeatureCard {
+  emoji?: string;
+  title: string;
+  icon_type: 'emoji' | 'image';
+  image_key: string | null;
+  description: string;
+  image?: string;
+}
+
+import { TabType } from '../components/TabNavigation';
+// ... (other imports)
+
+export interface Cta {
+  label: string;
+  action: TabType;
+}
+
+export interface CarouselContent {
+  ctas: {
+    primary: Cta;
+    secondary: Cta;
+  };
+  cards: FeatureCard[];
+}
+
+export interface OurStory {
+  title: string;
+  content: string;
+}
+
+export interface OurMission {
+  title: string;
+  content: string;
+}
+
+export interface WhyChooseUs {
+  title: string;
+  points: string[];
+}
+
+export interface AboutContent {
+  body: string;
+  cards: FeatureCard[];
+  title: string;
+  our_story: OurStory;
+  our_mission: OurMission;
+  why_choose_us: WhyChooseUs;
+}
+
+export interface ServicesContent {
+  title: string;
+  subtitle: string;
+  bottom_card: {
+    title: string;
+    description: string;
+    cta: Cta;
+  };
+}
+
+export interface ContactHours {
+  day: string;
+  time: string;
+}
+
+export interface ContactContent {
+  email: string;
+  hours: ContactHours[];
+  phone: string;
+  title: string;
+  address: string;
+  map_url: string;
+}
+
+export interface SocialLinks {
+  tiktok?: string;
+  facebook: string;
+  instagram: string;
+}
+
+export interface TeamMember {
+  bio: string;
+  name: string;
+  role?: string;
+  emoji?: string;
+  social: SocialLinks;
+  icon_type: 'emoji' | 'image';
+  image_key?: string;
+  image?: string;
+}
+
+export interface TeamContent {
+  title: string;
+  members: TeamMember[];
+}
+
+export interface AppointmentContent {
+  title: string;
+  subtitle?: string;
+  form_title?: string;
+  button_label?: string;
+}
+
+export interface ExtraCardsContent {
+  title: string;
+  cards: FeatureCard[];
+}
+
+export interface FollowUsContent {
+  title: string;
+  subtitle?: string;
+  socials?: SocialLinks;
+}
+
 export interface DashboardContent {
-  [key: string]: any;
+  carousel: CarouselContent;
+  about: AboutContent;
+  services: ServicesContent;
+  contact: ContactContent;
+  team: TeamContent;
+  appointment: AppointmentContent;
+  extra_cards: ExtraCardsContent;
+  follow_us: FollowUsContent;
 }
 
 export async function fetchDashboardContent(): Promise<DashboardContent> {

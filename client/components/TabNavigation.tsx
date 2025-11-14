@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-export type TabType = 'home' | 'about' | 'services' | 'appointment' | 'contact';
+export type TabType = 'home' | 'about' | 'services' | 'products' | 'appointment' | 'contact';
 
 interface TabNavigationProps {
   activeTab: TabType;
@@ -15,7 +15,7 @@ export default function TabNavigation({ activeTab, onTabChange }: TabNavigationP
     { id: 'home', label: 'Home' },
     { id: 'about', label: 'About Us' },
     { id: 'services', label: 'Services' },
-    // { id: 'products', label: 'Products' },
+    { id: 'products', label: 'Products' },
     { id: 'appointment', label: 'Book Now' },
     { id: 'contact', label: 'Contact' },
   ];
@@ -100,7 +100,7 @@ export default function TabNavigation({ activeTab, onTabChange }: TabNavigationP
 
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-gray-200 py-4">
+          <div className="lg:hidden border-t border-gray-200 py-4 bg-white/95">
             <div className="flex flex-col space-y-2">
               {tabs.map((tab) => (
                 <button

@@ -21,6 +21,13 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(products, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['get'])
+    def featured(self, request):
+        """Get only featured products, limited to 6"""
+        featured_products = self.queryset.filter(is_featured=True)[:6]
+        serializer = self.get_serializer(featured_products, many=True)
+        return Response(serializer.data)
+
 
 class AppointmentViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     """ViewSet for viewing and creating Appointment instances"""

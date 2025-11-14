@@ -10,6 +10,11 @@ interface FooterProps {
   onNavigate?: (tab: TabType) => void;
 }
 
+interface ContactHour {
+  day: string;
+  time: string;
+}
+
 export default function Footer({ onNavigate }: FooterProps) {
   const currentYear = new Date().getFullYear();
   const { data: services = [] } = useSalonServices();
@@ -93,7 +98,7 @@ export default function Footer({ onNavigate }: FooterProps) {
             <h4 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold">Services</h4>
             <ul className="space-y-2 text-sm sm:text-base text-gray-400">
               {services.length > 0 ? (
-                services.slice(0, 5).map((service: any) => (
+                services.slice(0, 5).map(service => (
                   <li key={service.id}>{service.title}</li>
                 ))
               ) : (
@@ -133,7 +138,7 @@ export default function Footer({ onNavigate }: FooterProps) {
                   <li className="flex items-start space-x-2 sm:space-x-3">
                     <span className="flex-shrink-0">🕒</span>
                     <span className="min-w-0">
-                      {contactInfo.hours?.map((h: any, i: number) => (
+                      {contactInfo.hours?.map((h: ContactHour, i: number) => (
                         <span key={i}>{h.day}: {h.time}<br /></span>
                       ))}
                     </span>
@@ -183,4 +188,3 @@ export default function Footer({ onNavigate }: FooterProps) {
     </footer>
   );
 }
-

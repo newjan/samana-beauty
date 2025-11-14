@@ -2,18 +2,26 @@
 
 import { Product } from '@/lib/api';
 import Image from 'next/image';
+import parse from 'html-react-parser';
+import { useState } from 'react'; // Import useState
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false); // State for description expansion
+
+  const toggleExpanded = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
-    <div className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-all duration-300 hover:shadow-xl hover:scale-105 active:scale-100">
+    <div className="group relative overflow-hidden rounded-lg bg-white shadow-md transition-all duration-300 hover:shadow-xl hover:scale-105">
       <div className="relative h-48 sm:h-56 md:h-64 w-full overflow-hidden bg-gradient-to-br from-pink-100 to-purple-100">
-        {product.image_url ? (
+        {product.image && product.image.length > 0 ? (
           <Image
-            src={product.image_url}
+            src={product.image}
             alt={product.name}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-110"
@@ -34,7 +42,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
       <div className="p-4 sm:p-5 md:p-6">
         <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
-          <h3 className="text-lg sm:text-xl font-bold text-gray-800 line-clamp-2">{product.name}</h3>
+          <h3 className="text-lg sm:text-xl font-bold text-gray-800 line-clamp-2 pr-5">{product.name}</h3>
           <span className="text-base sm:text-lg font-semibold text-pink-600 flex-shrink-0">
             Rs.{product.price}
           </span>
@@ -44,9 +52,21 @@ export default function ProductCard({ product }: ProductCardProps) {
             {product.category}
           </span>
         )}
-        <p className="mt-2 text-xs sm:text-sm text-gray-600 line-clamp-2">
-          {product.description}
-        </p>
+        {product.description && (
+          <div className="mt-2">
+            <div className={`prose prose-sm text-xs sm:text-sm text-gray-600 ${isExpanded ? '' : 'line-clamp-2'}`}>
+              {parse(product.description)}
+            </div>
+            {product.description.length > 100 && ( // Only show button if description is long enough to be clamped
+              <button
+                onClick={toggleExpanded}
+                className="mt-2 text-pink-600 hover:text-pink-800 text-sm font-medium focus:outline-none"
+              >
+                {isExpanded ? 'Read Less' : 'Read More'}
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

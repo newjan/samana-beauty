@@ -5,15 +5,7 @@ import Image from 'next/image';
 import { TabType } from './TabNavigation';
 import { useBanners } from '@/lib/queries/useBanners';
 import { useDashboardContent } from '@/lib/queries/useDashboardContent';
-
-interface CarouselImage {
-  id: number;
-  image: string;
-  title?: string;
-  subtitle?: string;
-  description?: string;
-  alt?: string;
-}
+import { FeatureCard } from '@/lib/api';
 
 interface ImageCarouselProps {
   onNavigate?: (tab: TabType) => void;
@@ -112,8 +104,8 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
     }
   };
 
-  const carouselContent = dashboardContent?.carousel || {};
-  const { ctas, cards } = carouselContent;
+  const carouselContent = dashboardContent?.carousel;
+  const { ctas, cards } = carouselContent || {};
 
   if (loading || isDashboardLoading) {
     return (
@@ -295,7 +287,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                       >
                         {ctas.primary && (
                           <button
-                            onClick={() => handleNavigate(ctas.primary.action as TabType)}
+                            onClick={() => handleNavigate(ctas.primary.action)}
                             className="group relative overflow-hidden rounded-full bg-gradient-to-r from-pink-500 to-purple-600 px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base md:text-lg font-semibold text-white shadow-2xl transition-all duration-300 hover:scale-110 hover:shadow-pink-500/50 active:scale-95"
                           >
                             <span className="relative z-10">{ctas.primary.label}</span>
@@ -304,7 +296,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                         )}
                         {ctas.secondary && (
                           <button
-                            onClick={() => handleNavigate(ctas.secondary.action as TabType)}
+                            onClick={() => handleNavigate(ctas.secondary.action)}
                             className="rounded-full border-2 border-white/80 bg-white/10 backdrop-blur-sm px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base md:text-lg font-semibold text-white transition-all duration-300 hover:scale-110 hover:bg-white/20 hover:shadow-lg active:scale-95"
                           >
                             {ctas.secondary.label}
@@ -322,7 +314,7 @@ export default function ImageCarousel({ onNavigate }: ImageCarouselProps) {
                             : 'opacity-0 translate-y-10'
                         }`}
                       >
-                        {cards.map((feature: any, idx: number) => (
+                        {cards.map((feature: FeatureCard, idx: number) => (
                           <div
                             key={idx}
                             className="group rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md p-2.5 sm:p-3 md:p-4 shadow-lg border border-white/20 transition-all duration-300 hover:scale-105 hover:bg-white/20 hover:shadow-2xl overflow-hidden"

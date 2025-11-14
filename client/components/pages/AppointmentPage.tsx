@@ -5,6 +5,14 @@ import { useDashboardContent } from '@/lib/queries/useDashboardContent';
 import Image from 'next/image';
 import AppointmentPageSkeleton from '../skeletons/AppointmentPageSkeleton';
 
+interface ExtraCardInfo {
+  icon_type: string;
+  image?: string;
+  emoji?: string;
+  title: string;
+  description: string;
+}
+
 export default function AppointmentPage() {
   const { data, isLoading, isError, error } = useDashboardContent();
 
@@ -17,7 +25,7 @@ export default function AppointmentPage() {
       <section className="flex min-h-screen items-center justify-center bg-red-50">
         <div className="text-center text-red-700">
           <h2 className="mb-2 text-2xl font-bold">Oops! Something went wrong.</h2>
-          <p>We couldn't load the page content. Please try again later.</p>
+          <p>We couldn&apos;t load the page content. Please try again later.</p>
           {error && <p className="mt-4 text-sm text-red-500">Error: {error.message}</p>}
         </div>
       </section>
@@ -60,7 +68,7 @@ export default function AppointmentPage() {
               </h3>
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {extraCardsContent.cards.map((info: any, index: number) => (
+              {extraCardsContent.cards.map((info: ExtraCardInfo, index: number) => (
                 <div
                   key={index}
                   className="rounded-xl bg-white p-5 sm:p-6 text-center shadow-lg transition-all duration-300 hover:scale-105 active:scale-100"
@@ -83,4 +91,3 @@ export default function AppointmentPage() {
     </section>
   );
 }
-

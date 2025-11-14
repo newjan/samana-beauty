@@ -6,6 +6,7 @@ import parse from 'html-react-parser';
 import { useSalonServices } from '@/lib/queries/useSalonServices';
 import { useDashboardContent } from '@/lib/queries/useDashboardContent';
 import ServicesPageSkeleton from '../skeletons/ServicesPageSkeleton';
+import Image from 'next/image'; // Import Image component
 
 interface ServicesPageProps {
   onNavigate?: (tab: TabType) => void;
@@ -79,7 +80,13 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
               <div className="relative z-10">
                 {/* Service Image if available */}
                 {service.image && (
-                  <img src={service.image} alt={service.title} className="mb-3 sm:mb-4 w-full h-40 object-cover rounded-xl" />
+                  <Image
+                    src={service.image}
+                    alt={service.title}
+                    width={300} // Example width, adjust as needed
+                    height={160} // Example height, adjust as needed
+                    className="mb-3 sm:mb-4 w-full h-40 object-cover rounded-xl"
+                  />
                 )}
                 <h3 className="mb-2 sm:mb-3 text-xl sm:text-2xl font-bold text-gray-800">{service.title}</h3>
                 <p className="mb-3 sm:mb-4 text-sm sm:text-base text-gray-600 leading-relaxed">{service.description}</p>
@@ -120,7 +127,7 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
         {/* Call to Action */}
         <div className="mt-12 sm:mt-16 text-center">
           <div className="mx-auto max-w-2xl rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 p-6 sm:p-8 text-white shadow-xl">
-            <h3 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold">{}{bottomCardContent.title || "Ready to transform?"}</h3>
+            <h3 className="mb-3 sm:mb-4 text-2xl sm:text-3xl font-bold">{bottomCardContent.title || "Ready to transform?"}</h3>
             <p className="mb-4 sm:mb-6 text-base sm:text-lg">
               {bottomCardContent.description || 'Book your appointment today and experience the luxury you deserve'}
             </p>
@@ -136,4 +143,3 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
     </section>
   );
 }
-

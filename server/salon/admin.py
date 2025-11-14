@@ -1,9 +1,9 @@
+from django.utils.safestring import mark_safe
 from unfold.admin import ModelAdmin
 from django.contrib import admin
 from django.db.models import JSONField
 from django_json_widget.widgets import JSONEditorWidget
 from .models import DashboardContent, DashboardImage, Product, Appointment, Banner, ServiceCategory, Service
-
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
 from django.contrib.auth.models import User, Group
@@ -27,13 +27,19 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
 @admin.register(Group)
 class GroupAdmin(BaseGroupAdmin, ModelAdmin):
     pass
-# @admin.register(Product)
-# class ProductAdmin(ModelAdmin):
-#     list_display = ['name', 'category', 'price', 'in_stock', 'created_at']
-#     list_filter = ['category', 'in_stock', 'created_at']
-#     search_fields = ['name', 'description', 'category']
-#     list_editable = ['in_stock']
+@admin.register(Product)
+class ProductAdmin(ModelAdmin):
+    list_display = ['name', 'category', 'price', 'in_stock', 'is_featured', 'created_at', 'image_preview']
+    list_filter = ['category', 'in_stock', 'is_featured', 'created_at']
+    search_fields = ['name', 'description', 'category']
+    list_editable = ['in_stock', 'is_featured']
+    # readonly_fields = ['image_preview']
 
+    def image_preview(self, obj):
+        if obj.image:
+            return mark_safe(f'<img src="{obj.image.url}" width="50" height="50" />')
+        return "(No image)"
+    image_preview.short_description = "Image Preview"
 
 @admin.register(Appointment)
 class AppointmentAdmin(ModelAdmin):

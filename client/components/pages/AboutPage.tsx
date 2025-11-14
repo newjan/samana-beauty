@@ -3,6 +3,22 @@
 import { useDashboardContent } from "@/lib/queries/useDashboardContent";
 import { useEffect, useRef } from "react";
 import AboutPageSkeleton from "../skeletons/AboutPageSkeleton"; // new import
+import Image from "next/image";
+
+interface AboutCardValue {
+  emoji: string;
+  title: string;
+  description: string;
+}
+
+interface TeamMember {
+  icon_type: string;
+  image?: string;
+  emoji?: string;
+  name: string;
+  role: string;
+  bio: string;
+}
 
 export default function AboutPage() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -100,7 +116,7 @@ export default function AboutPage() {
           <div className="space-y-4 sm:space-y-6">
             {aboutContent.cards && (
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                {aboutContent.cards.map((value: any, index: number) => (
+                {aboutContent.cards.map((value: AboutCardValue, index: number) => (
                   <div
                     key={index}
                     className="group rounded-xl bg-white p-4 sm:p-6 text-center shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl"
@@ -151,16 +167,18 @@ export default function AboutPage() {
               {teamContent.title}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {teamContent.members.map((member: any, index: number) => (
+              {teamContent.members.map((member: TeamMember, index: number) => (
                 <div
                   key={index}
                   className="group rounded-2xl bg-white p-5 sm:p-6 text-center shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
                 >
                   <div className="mb-3 sm:mb-4 text-5xl sm:text-6xl">
                     {member.icon_type === "image" && member.image ? (
-                      <img
+                      <Image
                         src={member.image}
                         alt={member.name}
+                        width={96} // Adjusted width for Image component
+                        height={96} // Adjusted height for Image component
                         className="w-24 h-24 rounded-full mx-auto object-cover"
                       />
                     ) : (

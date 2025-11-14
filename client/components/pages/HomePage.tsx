@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { TabType } from '../TabNavigation';
 import Image from 'next/image';
 
@@ -9,8 +9,6 @@ interface HomePageProps {
 }
 
 export default function HomePage({ onNavigate }: HomePageProps) {
-  const heroRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     // Floating animation for decorative elements
     const elements = document.querySelectorAll('.float-animation');
@@ -117,4 +115,3 @@ export default function HomePage({ onNavigate }: HomePageProps) {
     </section>
   );
 }
-

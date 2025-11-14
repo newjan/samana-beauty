@@ -8,16 +8,28 @@ from django.db.models import JSONField
 class Product(models.Model):
     """Model for salon products"""
     name = models.CharField(max_length=200)
-    description = models.TextField()
+    description = CKEditor5Field('Description', config_name='extends', blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
-    image_url = models.URLField(blank=True, null=True)
+    image = models.ImageField(upload_to='products/', blank=True, null=True)
     category = models.CharField(max_length=100, blank=True)
     in_stock = models.BooleanField(default=True)
+    is_featured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.is_featured and Product.objects.filter(is_featured=True).exclude(pk=self.pk).count() >= 6:
+            raise ValidationError("Only a maximum of 6 products can be featured.")
+        if self.is_featured and not self.in_stock:
+            raise ValidationError("A product must be in stock to be featured.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean() # Call full_clean to run validators
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
