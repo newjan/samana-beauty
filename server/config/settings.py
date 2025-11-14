@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+from django.templatetags.static import static
 
 # Load environment variables from .env file
 load_dotenv()
@@ -159,7 +160,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 STATIC_URL = os.environ.get('STATIC_URL', default='static/')
-STATIC_ROOT = os.path.join(BASE_DIR, os.environ.get('STATIC_ROOT', default='static'))
+STATIC_ROOT = os.path.join(BASE_DIR, os.environ.get('STATIC_ROOT', default='staticfiles'))
 
     
 # Default primary key field type
@@ -254,6 +255,8 @@ UNFOLD = {
         "show_search": True,
         "show_all_applications": True,
     },
+    "SITE_URL": "https://samana-beauty.vercel.app/",
+    "SITE_ICON": lambda request: static("images/samana-logo.png")
 }
 
 
