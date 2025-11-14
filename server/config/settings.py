@@ -37,6 +37,10 @@ ALLOWED_HOSTS = ENV_ALLOWED_HOSTS.split(',') if ENV_ALLOWED_HOSTS is not None el
 # Application definition
 
 INSTALLED_APPS = [
+    'unfold',
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
+    "unfold.contrib.inlines", 
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -70,7 +74,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'salon' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -240,6 +244,15 @@ LOGGING = {
     'root': {
         'handlers': ['console', 'file', 'error_file'],
         'level': 'INFO',
+    },
+}
+
+UNFOLD = {
+    "SITE_TITLE": "Samana Administration",
+    "SITE_HEADER": "Samana Beauty Admin",
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": True,
     },
 }
 

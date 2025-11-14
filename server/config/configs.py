@@ -1,3 +1,7 @@
+import os
+from config.settings import BASE_DIR
+
+
 customColorPalette = [
     {"color": "hsl(4, 90%, 58%)", "label": "Red"},
     {"color": "hsl(340, 82%, 52%)", "label": "Pink"},

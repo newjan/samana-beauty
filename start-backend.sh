@@ -6,6 +6,9 @@ echo ""
 
 cd server
 
+# Create logs directory if it doesn't exist
+mkdir -p logs
+
 # Check if virtual environment exists
 if [ ! -d "venv" ]; then
     echo "❌ Virtual environment not found!"
