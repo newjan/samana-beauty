@@ -94,7 +94,7 @@ export default function BookingForm() {
           />
           <label
             htmlFor="customer_name"
-            className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 transition-all duration-200 peer-focus:top-1.5 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:-translate-y-0 peer-[:not(:placeholder-shown)]:text-xs"
+            className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 transition-all duration-200 peer-focus:top-[-0.5rem] peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-[-0.5rem] peer-[:not(:placeholder-shown)]:-translate-y-0 peer-[:not(:placeholder-shown)]:text-xs bg-white px-1 z-10"
           >
             Full Name 
           </label>
@@ -115,7 +115,7 @@ export default function BookingForm() {
           />
           <label
             htmlFor="customer_email"
-            className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 transition-all duration-200 peer-focus:top-1.5 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:-translate-y-0 peer-[:not(:placeholder-shown)]:text-xs"
+            className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 transition-all duration-200 peer-focus:top-[-0.5rem] peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-[-0.5rem] peer-[:not(:placeholder-shown)]:-translate-y-0 peer-[:not(:placeholder-shown)]:text-xs bg-white px-1 z-10"
           >
             Email 
           </label>
@@ -138,7 +138,7 @@ export default function BookingForm() {
             htmlFor="customer_phone"
             className={`absolute left-12 sm:left-14 transition-all duration-200 text-sm ${
               phone || focusedField === 'customer_phone'
-                ? 'top-1.5 text-xs text-pink-500'
+                ? 'top-[-0.5rem] text-xs text-pink-500 bg-white px-1 z-10'
                 : 'top-1/2 -translate-y-1/2 text-gray-500'
             }`}
           >
@@ -168,7 +168,7 @@ export default function BookingForm() {
             htmlFor="service_type"
             className={`absolute left-3 sm:left-4 transition-all duration-200 text-sm ${
               formData.service_type || focusedField === 'service_type'
-                ? 'top-1.5 text-xs text-pink-500'
+                ? 'top-[-0.5rem] text-xs text-pink-500 bg-white px-1 z-10'
                 : 'top-1/2 -translate-y-1/2 text-gray-500'
             }`}
           >
@@ -179,11 +179,11 @@ export default function BookingForm() {
         <div className="relative">
           <label
             htmlFor="appointment_date"
-            className={`absolute left-3 sm:left-4 top-1.5 text-xs pointer-events-none z-10 transition-colors duration-200 ${
+            className={`absolute left-3 sm:left-4 top-[-0.5rem] text-xs pointer-events-none z-10 transition-colors duration-200 ${
               formData.appointment_date || focusedField === 'appointment_date'
                 ? 'text-pink-500'
                 : 'text-gray-500'
-            }`}
+            } bg-white px-1`}
           >
             Date 
           </label>
@@ -204,11 +204,11 @@ export default function BookingForm() {
         <div className="relative">
           <label
             htmlFor="appointment_time"
-            className={`absolute left-3 sm:left-4 top-1.5 text-xs pointer-events-none z-10 transition-colors duration-200 ${
+            className={`absolute left-3 sm:left-4 top-[-0.5rem] text-xs pointer-events-none z-10 transition-colors duration-200 ${
               formData.appointment_time || focusedField === 'appointment_time'
                 ? 'text-pink-500'
                 : 'text-gray-500'
-            }`}
+            } bg-white px-1`}
           >
             Time 
           </label>
@@ -240,7 +240,7 @@ export default function BookingForm() {
         />
         <label
           htmlFor="notes"
-          className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-1.5 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:-translate-y-0 peer-[:not(:placeholder-shown)]:text-xs"
+          className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-[-0.5rem] peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-[-0.5rem] peer-[:not(:placeholder-shown)]:-translate-y-0 peer-[:not(:placeholder-shown)]:text-xs bg-white px-1 z-10"
         >
           Additional Notes
         </label>
