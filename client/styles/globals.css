@@ -138,3 +138,38 @@ body {
   animation: shimmer 2s infinite linear;
   transform: translateX(-100%);
 }
+
+.PhoneInput {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  padding: 0.5rem 0.75rem;
+  transition: all 0.2s;
+}
+
+.PhoneInput:focus-within {
+  border-color: #ec4899;
+  box-shadow: 0 0 0 2px #fce7f3;
+}
+
+.PhoneInputInput {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  padding: 0;
+  font-size: 0.875rem;
+  color: #111827;
+}
+
+.PhoneInputCountry {
+  margin-right: 0.5rem;
+}
+
+.PhoneInputCountrySelect {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  color: #111827;
+}

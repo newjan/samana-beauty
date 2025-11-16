@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-export type TabType = 'home' | 'about' | 'services' | 'products' | 'appointment' | 'contact';
+export type TabType = 'home' | 'about' | 'services' | 'appointment' | 'contact';
 
 interface TabNavigationProps {
   activeTab: TabType;
@@ -15,7 +15,7 @@ export default function TabNavigation({ activeTab, onTabChange }: TabNavigationP
     { id: 'home', label: 'Home' },
     { id: 'about', label: 'About Us' },
     { id: 'services', label: 'Services' },
-    { id: 'products', label: 'Products' },
+    // { id: 'products', label: 'Products' },
     { id: 'appointment', label: 'Book Now' },
     { id: 'contact', label: 'Contact' },
   ];

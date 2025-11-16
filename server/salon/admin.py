@@ -16,30 +16,31 @@ admin.site.unregister(User)
 admin.site.unregister(Group)
 
 
-@admin.register(User)
-class UserAdmin(BaseUserAdmin, ModelAdmin):
-    # Forms loaded from `unfold.forms`
-    form = UserChangeForm
-    add_form = UserCreationForm
-    change_password_form = AdminPasswordChangeForm
+# @admin.register(User)
+# class UserAdmin(BaseUserAdmin, ModelAdmin):
+#     # Forms loaded from `unfold.forms`
+#     form = UserChangeForm
+#     add_form = UserCreationForm
+#     change_password_form = AdminPasswordChangeForm
 
 
-@admin.register(Group)
-class GroupAdmin(BaseGroupAdmin, ModelAdmin):
-    pass
-@admin.register(Product)
-class ProductAdmin(ModelAdmin):
-    list_display = ['name', 'category', 'price', 'in_stock', 'is_featured', 'created_at', 'image_preview']
-    list_filter = ['category', 'in_stock', 'is_featured', 'created_at']
-    search_fields = ['name', 'description', 'category']
-    list_editable = ['in_stock', 'is_featured']
-    # readonly_fields = ['image_preview']
+# @admin.register(Group)
+# class GroupAdmin(BaseGroupAdmin, ModelAdmin):
+#     pass
 
-    def image_preview(self, obj):
-        if obj.image:
-            return mark_safe(f'<img src="{obj.image.url}" width="50" height="50" />')
-        return "(No image)"
-    image_preview.short_description = "Image Preview"
+# @admin.register(Product)
+# class ProductAdmin(ModelAdmin):
+#     list_display = ['name', 'category', 'price', 'in_stock', 'is_featured', 'created_at', 'image_preview']
+#     list_filter = ['category', 'in_stock', 'is_featured', 'created_at']
+#     search_fields = ['name', 'description', 'category']
+#     list_editable = ['in_stock', 'is_featured']
+#     # readonly_fields = ['image_preview']
+
+#     def image_preview(self, obj):
+#         if obj.image:
+#             return mark_safe(f'<img src="{obj.image.url}" width="50" height="50" />')
+#         return "(No image)"
+#     image_preview.short_description = "Image Preview"
 
 @admin.register(Appointment)
 class AppointmentAdmin(ModelAdmin):

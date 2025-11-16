@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 import { createAppointment, Appointment } from '@/lib/api';
 import { useSalonServices } from '@/lib/queries/useSalonServices';
 import { useDashboardContent } from '@/lib/queries/useDashboardContent';
@@ -6,7 +8,7 @@ import BookingFormSkeleton from './skeletons/BookingFormSkeleton';
 
 export default function BookingForm() {
   const { data: services = [] } = useSalonServices();
-  const serviceTypes = services.map(s => s.title); 
+  const serviceTypes = services.map(s => s.title);
   const { data: dashboardContent, isLoading: isDashboardContentLoading, isError: isDashboardContentError } = useDashboardContent();
 
   const [formData, setFormData] = useState<Omit<Appointment, 'id' | 'status' | 'created_at' | 'updated_at'>>({
@@ -18,6 +20,7 @@ export default function BookingForm() {
     service_type: '',
     notes: '',
   });
+  const [phone, setPhone] = useState<string | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -26,6 +29,11 @@ export default function BookingForm() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handlePhoneChange = (value: string | undefined) => {
+    setPhone(value);
+    setFormData(prev => ({ ...prev, customer_phone: value || '' }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,6 +54,7 @@ export default function BookingForm() {
         service_type: '',
         notes: '',
       });
+      setPhone(undefined);
     } catch (error) {
       setSubmitStatus('error');
       setErrorMessage(error instanceof Error ? error.message : 'Failed to book appointment');
@@ -80,12 +89,12 @@ export default function BookingForm() {
             onFocus={() => setFocusedField('customer_name')}
             onBlur={() => setFocusedField('')}
             required
-            className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 py-3 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
             placeholder=" "
           />
           <label
             htmlFor="customer_name"
-            className="absolute left-3 sm:left-4 top-3 sm:top-4 text-sm text-gray-500 transition-all duration-200 peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:text-xs"
+            className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 transition-all duration-200 peer-focus:top-1.5 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:-translate-y-0 peer-[:not(:placeholder-shown)]:text-xs"
           >
             Full Name 
           </label>
@@ -101,33 +110,37 @@ export default function BookingForm() {
             onFocus={() => setFocusedField('customer_email')}
             onBlur={() => setFocusedField('')}
             required
-            className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 py-3 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
             placeholder=" "
           />
           <label
             htmlFor="customer_email"
-            className="absolute left-3 sm:left-4 top-3 sm:top-4 text-sm text-gray-500 transition-all duration-200 peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:text-xs"
+            className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 transition-all duration-200 peer-focus:top-1.5 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:-translate-y-0 peer-[:not(:placeholder-shown)]:text-xs"
           >
             Email 
           </label>
         </div>
 
         <div className="relative">
-          <input
-            type="tel"
+          <PhoneInput
             id="customer_phone"
             name="customer_phone"
-            value={formData.customer_phone}
-            onChange={handleChange}
+            value={phone}
+            onChange={handlePhoneChange}
             onFocus={() => setFocusedField('customer_phone')}
             onBlur={() => setFocusedField('')}
             required
-            className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
-            placeholder=" "
+            defaultCountry="NP"
+            className="PhoneInput"
+            countrySelectProps={{ className: 'PhoneInputCountrySelect' }}
           />
           <label
             htmlFor="customer_phone"
-            className="absolute left-3 sm:left-4 top-3 sm:top-4 text-sm text-gray-500 transition-all duration-200 peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:text-xs"
+            className={`absolute left-12 sm:left-14 transition-all duration-200 text-sm ${
+              phone || focusedField === 'customer_phone'
+                ? 'top-1.5 text-xs text-pink-500'
+                : 'top-1/2 -translate-y-1/2 text-gray-500'
+            }`}
           >
             Phone Number 
           </label>
@@ -142,7 +155,7 @@ export default function BookingForm() {
             onFocus={() => setFocusedField('service_type')}
             onBlur={() => setFocusedField('')}
             required
-            className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200 bg-white"
+            className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 py-3 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200 bg-white"
           >
             <option value=""></option>
             {serviceTypes.map(service => (
@@ -156,7 +169,7 @@ export default function BookingForm() {
             className={`absolute left-3 sm:left-4 transition-all duration-200 text-sm ${
               formData.service_type || focusedField === 'service_type'
                 ? 'top-1.5 text-xs text-pink-500'
-                : 'top-3 sm:top-4 text-gray-500'
+                : 'top-1/2 -translate-y-1/2 text-gray-500'
             }`}
           >
             Service Type 
@@ -184,7 +197,7 @@ export default function BookingForm() {
             onBlur={() => setFocusedField('')}
             required
             min={new Date().toISOString().split('T')[0]}
-            className="w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="w-full rounded-lg border border-gray-300 px-3 sm:px-4 py-3 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
           />
         </div>
 
@@ -208,7 +221,7 @@ export default function BookingForm() {
             onFocus={() => setFocusedField('appointment_time')}
             onBlur={() => setFocusedField('')}
             required
-            className="w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="w-full rounded-lg border border-gray-300 px-3 sm:px-4 py-3 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200"
           />
         </div>
       </div>
@@ -222,12 +235,12 @@ export default function BookingForm() {
           onFocus={() => setFocusedField('notes')}
           onBlur={() => setFocusedField('')}
           rows={4}
-          className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 pt-5 sm:pt-6 pb-2 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200 resize-none"
+          className="peer w-full rounded-lg border border-gray-300 px-3 sm:px-4 py-3 text-sm sm:text-base text-gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-200 resize-none"
           placeholder=" "
         />
         <label
           htmlFor="notes"
-          className="absolute left-3 sm:left-4 top-3 sm:top-4 text-sm text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:text-xs"
+          className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 transition-all duration-200 pointer-events-none peer-focus:top-1.5 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-pink-500 peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:-translate-y-0 peer-[:not(:placeholder-shown)]:text-xs"
         >
           Additional Notes
         </label>
