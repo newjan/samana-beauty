@@ -1,0 +1,16 @@
+Hi {{ customer_name }},
+
+Thank you for reaching out to Samana The Beauty Gallery. We have successfully received your appointment request.
+
+Our team will review your request for a {{ service_type }} on {{ appointment_date }} at {{ appointment_time }} and will contact you shortly to confirm the booking.
+
+If you have any urgent questions, please don't hesitate to call us.
+
+We look forward to seeing you!
+
+Best,
+The Samana Beauty Team
+
+---
+© {% now "Y" %} Samana Beauty. All rights reserved.
+Suryabinayak, Pandubazar, Bhaktapur, Nepal

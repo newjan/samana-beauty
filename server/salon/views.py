@@ -1,5 +1,6 @@
 import logging
 import copy
+import threading
 from rest_framework import viewsets, status, generics, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -29,6 +30,10 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
 
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
+
 class AppointmentViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     """ViewSet for viewing and creating Appointment instances"""
     queryset = Appointment.objects.all()
@@ -39,13 +44,87 @@ class AppointmentViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
         try:
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            serializer.save(status='pending')
+            appointment = serializer.save(status='pending')
             headers = self.get_success_headers(serializer.data)
             logger.info(f"Appointment created successfully: {serializer.data}")
+
+            # --- Send email notifications in a background thread ---
+            email_thread = threading.Thread(target=self.send_appointment_emails, args=(appointment,))
+            email_thread.start()
+
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         except Exception as e:
             logger.error(f"Error creating appointment: {e}", exc_info=True)
             raise
+
+    def send_appointment_emails(self, appointment):
+        """
+        Sends confirmation email to customer and notification to admin.
+        This method is designed to be run in a background thread.
+        """
+        try:
+            # Common context
+            formatted_time = appointment.appointment_time.strftime('%I:%M %p') if appointment.appointment_time else ''
+            
+            # Send email notification to the user
+            try:
+                subject = 'We Have Received Your Appointment Request'
+                from_email = settings.DEFAULT_FROM_EMAIL
+                to_email = [appointment.customer_email]
+
+                customer_context = {
+                    'customer_name': appointment.customer_name,
+                    'service_type': appointment.service_type,
+                    'appointment_date': appointment.appointment_date,
+                    'appointment_time': formatted_time,
+                }
+                
+                html_content = render_to_string('salon/appointment_received.html', customer_context)
+                text_content = render_to_string('salon/appointment_received.txt', customer_context)
+
+                msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+                msg.attach_alternative(html_content, "text/html")
+                msg.send()
+                
+                logger.info(f"Appointment request email sent to {appointment.customer_email} for appointment {appointment.id}")
+            except Exception as e:
+                logger.error(f"Failed to send appointment request email to {appointment.customer_email} for appointment {appointment.id}: {e}", exc_info=True)
+
+            # Send email notification to admin
+            try:
+                admin_subject = f'New Appointment Request: {appointment.customer_name}'
+                admin_from_email = settings.DEFAULT_FROM_EMAIL
+                admin_recipient_list = settings.ADMIN_EMAILS
+
+                admin_context = {
+                    'appointment': appointment,
+                    'appointment_time': formatted_time,
+                }
+
+                admin_html_content = render_to_string('salon/admin_appointment_notification.html', admin_context)
+                admin_text_content = f"""
+                A new appointment has been booked.
+
+                Details:
+                Name: {appointment.customer_name}
+                Email: {appointment.customer_email}
+                Phone: {appointment.customer_phone}
+                Service: {appointment.service_type}
+                Date: {appointment.appointment_date}
+                Time: {formatted_time}
+                Notes: {appointment.notes}
+                """
+
+                admin_msg = EmailMultiAlternatives(admin_subject, admin_text_content, admin_from_email, admin_recipient_list)
+                admin_msg.attach_alternative(admin_html_content, "text/html")
+                admin_msg.send()
+
+                logger.info(f"Admin notification email sent for appointment {appointment.id}")
+            except Exception as e:
+                logger.error(f"Failed to send admin notification email for appointment {appointment.id}: {e}", exc_info=True)
+        
+        except Exception as e:
+            logger.error(f"An error occurred in the email sending thread for appointment {appointment.id}: {e}", exc_info=True)
 
 
 from rest_framework.views import APIView

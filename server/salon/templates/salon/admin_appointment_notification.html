@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Appointment Request</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 5px solid #9333ea;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .header {
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .content {
+            padding: 20px 0;
+            color: #4b5563;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .details-table th, .details-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .details-table th {
+            background-color: #f9fafb;
+            color: #374151;
+            font-weight: 600;
+            width: 30%;
+        }
+        .notes {
+            background-color: #f3f4f6;
+            border-left: 3px solid #d1d5db;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #9ca3af;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>New Appointment Request</h1>
+        </div>
+        <div class="content">
+            <p>A new appointment request has been submitted. Please review the details below and follow up with the customer to confirm.</p>
+            
+            <table class="details-table">
+                <tr>
+                    <th>Name</th>
+                    <td>{{ appointment.customer_name }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td><a href="mailto:{{ appointment.customer_email }}">{{ appointment.customer_email }}</a></td>
+                </tr>
+                <tr>
+                    <th>Phone</th>
+                    <td><a href="tel:{{ appointment.customer_phone }}">{{ appointment.customer_phone }}</a></td>
+                </tr>
+                <tr>
+                    <th>Service</th>
+                    <td>{{ appointment.service_type }}</td>
+                </tr>
+                <tr>
+                    <th>Date</th>
+                    <td>{{ appointment.appointment_date }}</td>
+                </tr>
+                <tr>
+                    <th>Time</th>
+                    <td>{{ appointment_time }}</td>
+                </tr>
+            </table>
+
+            {% if appointment.notes %}
+            <div class="notes">
+                <strong>Additional Notes:</strong>
+                <p>{{ appointment.notes }}</p>
+            </div>
+            {% endif %}
+        </div>
+        <div class="footer">
+            <p>This is an automated notification from the Samana Beauty website.</p>
+        </div>
+    </div>
+</body>
+</html>
