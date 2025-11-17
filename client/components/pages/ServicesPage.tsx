@@ -6,7 +6,7 @@ import parse from 'html-react-parser';
 import { useSalonServices } from '@/lib/queries/useSalonServices';
 import { useDashboardContent } from '@/lib/queries/useDashboardContent';
 import ServicesPageSkeleton from '../skeletons/ServicesPageSkeleton';
-import Image from 'next/image'; // Import Image component
+import Image from 'next/image';
 
 interface ServicesPageProps {
   onNavigate?: (tab: TabType) => void;
@@ -92,7 +92,22 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
                 <p className="mb-3 sm:mb-4 text-sm sm:text-base text-gray-600 leading-relaxed">{service.description}</p>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 border-t border-gray-200 pt-3 sm:pt-4">
                   <div>
-                    <p className="text-xs sm:text-sm font-semibold text-pink-600">{service.price ? `Rs.${service.price}` : ''}</p>
+                    {service.offer_price && service.price && service.offer_price < service.price ? (
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs sm:text-sm font-semibold text-pink-600">
+                          <del className="text-gray-400">Rs.{service.price}</del> Rs.{service.offer_price}
+                        </p>
+                        {service.discount_percentage && (
+                          <span className="text-xs font-bold text-white bg-green-700 rounded-full px-2 py-0.5">
+                            {service.discount_percentage}% OFF
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-xs sm:text-sm font-semibold text-pink-600">
+                        {service.price ? `Rs.${service.price}` : ''}
+                      </p>
+                    )}
                     <p className="text-xs text-gray-500">{service.duration_minutes ? `${service.duration_minutes} min` : ''}</p>
                     {service.category && (
                       <p className="text-xs text-purple-600 font-semibold">{service.category.name}</p>

@@ -44,7 +44,7 @@ admin.site.unregister(Group)
 
 @admin.register(Appointment)
 class AppointmentAdmin(ModelAdmin):
-    list_display = ['customer_name', 'customer_email', 'appointment_date', 'appointment_time', 'service_type', 'status', 'created_at']
+    list_display = ['customer_name', 'customer_email', 'customer_phone', 'appointment_date', 'appointment_time', 'service_type', 'status', 'created_at']
     list_filter = ['status', 'appointment_date', 'service_type']
     search_fields = ['customer_name', 'customer_email', 'customer_phone']
     list_editable = ['status']
@@ -65,7 +65,7 @@ class ServiceCategoryAdmin(ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(ModelAdmin):
-    list_display = ("title", "category", "price", "is_active")
+    list_display = ("title", "category", "price", "offer_price", "is_active")
     list_filter = ("is_active", "category")
     prepopulated_fields = {"slug": ("title",)}
     

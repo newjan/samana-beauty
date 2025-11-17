@@ -99,6 +99,7 @@ class Service(models.Model):
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    offer_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     duration_minutes = models.PositiveIntegerField(blank=True, null=True)
     image = models.ImageField(upload_to="services/", blank=True, null=True)
     is_active = models.BooleanField(default=True)

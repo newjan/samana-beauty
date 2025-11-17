@@ -99,6 +99,8 @@ export interface Service {
   slug: string;
   description?: string;
   price?: number;
+  offer_price?: number;
+  discount_percentage?: number;
   duration_minutes?: number;
   image?: string;
   is_active?: boolean;

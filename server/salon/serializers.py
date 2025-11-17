@@ -48,11 +48,21 @@ class ServiceCategorySerializer(serializers.ModelSerializer):
 
 class ServiceSerializer(serializers.ModelSerializer):
     category = ServiceCategorySerializer(read_only=True)
+    discount_percentage = serializers.SerializerMethodField()
+
     class Meta:
         model = Service
         fields = [
-            "id", "title", "slug", "description", "price", "duration_minutes", "image", "is_active", "category", "created_at", "updated_at", "additional_info"
+            "id", "title", "slug", "description", "price", "offer_price", 
+            "discount_percentage", "duration_minutes", "image", "is_active", 
+            "category", "created_at", "updated_at", "additional_info"
         ]
+
+    def get_discount_percentage(self, obj):
+        if obj.offer_price and obj.price and obj.offer_price < obj.price:
+            discount = ((obj.price - obj.offer_price) / obj.price) * 100
+            return round(discount)
+        return None
 
 
 class DashboardImageSerializer(serializers.ModelSerializer):
