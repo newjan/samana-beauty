@@ -110,6 +110,14 @@ export interface Service {
   additional_info?: string; // CKEditor5 HTML
 }
 
+export interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
+
 export async function fetchProducts(isFeatured: boolean = false): Promise<Product[]> {
   const endpoint = isFeatured ? 'products/featured/' : 'products/';
   return createCachedFetcher(`api_cache_products_${isFeatured ? 'featured' : 'all'}`, async () => {
@@ -171,22 +179,45 @@ export async function fetchBanners(): Promise<Banner[]> {
   });
 }
 
-export async function fetchSalonServices(): Promise<Service[]> {
-  return createCachedFetcher('api_cache_services', async () => {
-    const response = await fetch(`${API_BASE_URL}/services/`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch services');
-    }
-    const data = await response.json();
-    if (Array.isArray(data)) {
-      return data;
-    }
-    if (data.results && Array.isArray(data.results)) {
-      return data.results;
-    }
-    return [];
+export async function fetchSalonServices({ pageParam = 1, queryKey }: { pageParam?: number, queryKey: any }): Promise<PaginatedResponse<Service>> {
+  const [_, { search, category, ordering }] = queryKey;
+  const params = new URLSearchParams({
+      page: pageParam.toString(),
+      ...(search && { search }),
+      ...(category && category !== 'all' && { category__slug: category }),
+      ...(ordering && { ordering }),
   });
+
+  const response = await fetch(`${API_BASE_URL}/services/?${params.toString()}`);
+  if (!response.ok) {
+      throw new Error('Failed to fetch services');
+  }
+  return response.json();
 }
+
+export async function fetchFeaturedServices(): Promise<Service[]> {
+  const response = await fetch(`${API_BASE_URL}/services/?limit=6`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch featured services');
+  }
+  return response.json();
+}
+
+export async function fetchServiceCategories(): Promise<ServiceCategory[]> {
+  const response = await fetch(`${API_BASE_URL}/service-categories/`);
+  if (!response.ok) {
+      throw new Error('Failed to fetch service categories');
+  }
+  const data = await response.json();
+  if (Array.isArray(data)) {
+      return data;
+  }
+  if (data.results && Array.isArray(data.results)) {
+      return data.results;
+  }
+  return [];
+}
+
 
 export interface FeatureCard {
   emoji?: string;

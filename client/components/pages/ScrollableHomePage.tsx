@@ -15,11 +15,9 @@ interface ScrollableHomePageProps {
 }
 
 export default function ScrollableHomePage({ onTabChange, activeTab }: ScrollableHomePageProps) {
-  const sectionsRef = useRef<{ [key in TabType]: HTMLElement | null }>({
+  const sectionsRef = useRef<{ [key in Exclude<TabType, 'services' | 'products'>]: HTMLElement | null }>({
     home: null,
     about: null,
-    services: null,
-    // products: null,
     appointment: null,
     contact: null,
   });
@@ -44,7 +42,7 @@ export default function ScrollableHomePage({ onTabChange, activeTab }: Scrollabl
       return;
     }
 
-    const section = sectionsRef.current[activeTab];
+    const section = sectionsRef.current[activeTab as Exclude<TabType, 'services' | 'products'>];
     if (!section) return;
 
     // Ignore scroll events during programmatic scroll
@@ -165,23 +163,13 @@ export default function ScrollableHomePage({ onTabChange, activeTab }: Scrollabl
         <AboutPage />
       </section> 
 
-      {/* Services Section */}
+      {/* Services Section (now on a separate page) */}
       <section
-        ref={(el) => {sectionsRef.current.services = el}}
         id="services"
         className="scroll-mt-16 sm:scroll-mt-20 md:scroll-mt-18"
       >
         <ServicesPage onNavigate={handleNavigate} />
       </section>
-
-      {/* Products Section */}
-      {/* <section
-        ref={(el) => {sectionsRef.current.products = el}}
-        id="products"
-        className="scroll-mt-16 sm:scroll-mt-20 md:scroll-mt-18"
-      >
-        <ProductsPage />
-      </section> */}
 
       {/* Appointment Section */}
       <section

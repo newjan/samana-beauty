@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-export type TabType = 'home' | 'about' | 'services' | 'appointment' | 'contact';
+import Link from 'next/link';
+export type TabType = 'home' | 'about' | 'services' | 'appointment' | 'contact' | 'products';
 
 interface TabNavigationProps {
   activeTab: TabType;
@@ -11,11 +12,11 @@ interface TabNavigationProps {
 
 export default function TabNavigation({ activeTab, onTabChange }: TabNavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const tabs: { id: TabType; label: string }[] = [
+  const tabs: { id: TabType; label: string; href?: string }[] = [
     { id: 'home', label: 'Home' },
     { id: 'about', label: 'About Us' },
-    { id: 'services', label: 'Services' },
-    // { id: 'products', label: 'Products' },
+    { id: 'services', label: 'Services', href: '/services' },
+    { id: 'products', label: 'Products', href: '/products' },
     { id: 'appointment', label: 'Book Now' },
     { id: 'contact', label: 'Contact' },
   ];
@@ -55,22 +56,38 @@ export default function TabNavigation({ activeTab, onTabChange }: TabNavigationP
           {/* Desktop Navigation */}
           <div className="hidden lg:flex space-x-2">
             {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => handleTabClick(tab.id)}
-                className={`
-                  relative rounded-full px-4 xl:px-5 py-2 text-xs xl:text-sm font-semibold transition-all duration-300 whitespace-nowrap
-                  ${activeTab === tab.id
-                    ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-xl/25 scale-105'
-                    : 'text-gray-700 hover:bg-pink-50 hover:text-pink-600'
-                  }
-                `}
-              >
-                {tab.label}
-                {activeTab === tab.id && (
-                  <span className="absolute -bottom-1 left-1/2 h-1 w-8 -translate-x-1/2 rounded-full bg-white"></span>
-                )}
-              </button>
+              tab.href ? (
+                <Link
+                  key={tab.id}
+                  href={tab.href}
+                  className={`
+                    relative rounded-full px-4 xl:px-5 py-2 text-xs xl:text-sm font-semibold transition-all duration-300 whitespace-nowrap
+                    ${activeTab === tab.id
+                      ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-xl/25 scale-105'
+                      : 'text-gray-700 hover:bg-pink-50 hover:text-pink-600'
+                    }
+                  `}
+                >
+                  {tab.label}
+                </Link>
+              ) : (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabClick(tab.id)}
+                  className={`
+                    relative rounded-full px-4 xl:px-5 py-2 text-xs xl:text-sm font-semibold transition-all duration-300 whitespace-nowrap
+                    ${activeTab === tab.id
+                      ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-xl/25 scale-105'
+                      : 'text-gray-700 hover:bg-pink-50 hover:text-pink-600'
+                    }
+                  `}
+                >
+                  {tab.label}
+                  {activeTab === tab.id && (
+                    <span className="absolute -bottom-1 left-1/2 h-1 w-8 -translate-x-1/2 rounded-full bg-white"></span>
+                  )}
+                </button>
+              )
             ))}
           </div>
 
@@ -103,19 +120,36 @@ export default function TabNavigation({ activeTab, onTabChange }: TabNavigationP
           <div className="lg:hidden border-t border-gray-200 py-4 bg-white/95">
             <div className="flex flex-col space-y-2">
               {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => handleTabClick(tab.id)}
-                  className={`
-                    relative rounded-lg px-4 py-3 text-left text-sm font-semibold transition-all duration-300
-                    ${activeTab === tab.id
-                      ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md'
-                      : 'text-gray-700 hover:bg-pink-50 hover:text-pink-600'
-                    }
-                  `}
-                >
-                  {tab.label}
-                </button>
+                tab.href ? (
+                  <Link
+                    key={tab.id}
+                    href={tab.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`
+                      relative rounded-lg px-4 py-3 text-left text-sm font-semibold transition-all duration-300
+                      ${activeTab === tab.id
+                        ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md'
+                        : 'text-gray-700 hover:bg-pink-50 hover:text-pink-600'
+                      }
+                    `}
+                  >
+                    {tab.label}
+                  </Link>
+                ) : (
+                  <button
+                    key={tab.id}
+                    onClick={() => handleTabClick(tab.id)}
+                    className={`
+                      relative rounded-lg px-4 py-3 text-left text-sm font-semibold transition-all duration-300
+                      ${activeTab === tab.id
+                        ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md'
+                        : 'text-gray-700 hover:bg-pink-50 hover:text-pink-600'
+                      }
+                    `}
+                  >
+                    {tab.label}
+                  </button>
+                )
               ))}
             </div>
           </div>

@@ -4,8 +4,8 @@ import threading
 from rest_framework import viewsets, status, generics, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import Product, Appointment, DashboardContent
-from .serializers import ProductSerializer, AppointmentSerializer, DashboardContentSerializer
+from .models import Product, Appointment, DashboardContent, ServiceCategory
+from .serializers import ProductSerializer, AppointmentSerializer, DashboardContentSerializer, ServiceCategorySerializer
 
 logger = logging.getLogger(__name__)
 
@@ -143,6 +143,11 @@ from .models import Banner, Service
 from .serializers import BannerSerializer, ServiceSerializer
 
 
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+
+
 class BannerListAPIView(generics.ListAPIView):
     queryset = Banner.objects.filter(is_active=True).order_by("priority")
     serializer_class = BannerSerializer
@@ -157,9 +162,38 @@ class BannerListAPIView(generics.ListAPIView):
             raise
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 9
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+
+
+class ServiceCategoryListAPIView(generics.ListAPIView):
+    queryset = ServiceCategory.objects.all().order_by("name")
+    serializer_class = ServiceCategorySerializer
+    pagination_class = None
+
+
 class ServiceListAPIView(generics.ListAPIView):
     queryset = Service.objects.filter(is_active=True).select_related("category").order_by("title")
     serializer_class = ServiceSerializer
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ['category__slug']
+    ordering_fields = ['title', 'price', 'duration_minutes']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        limit = self.request.query_params.get('limit')
+        if limit and limit.isdigit():
+            return queryset[:int(limit)]
+        return queryset
+
+    def get_paginated_response(self, data):
+        if self.request.query_params.get('limit'):
+            return Response(data)
+        return super().get_paginated_response(data)
 
     def get(self, request, *args, **kwargs):
         try:
