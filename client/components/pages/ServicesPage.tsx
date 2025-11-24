@@ -3,19 +3,21 @@
 import { useState } from 'react';
 import { TabType } from '../TabNavigation';
 import parse from 'html-react-parser';
-import { useSalonServices } from '@/lib/queries/useSalonServices';
+import { useFeaturedServices } from '@/lib/queries/useFeaturedServices';
 import { useDashboardContent } from '@/lib/queries/useDashboardContent';
 import ServicesPageSkeleton from '../skeletons/ServicesPageSkeleton';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface ServicesPageProps {
   onNavigate?: (tab: TabType) => void;
 }
 
 export default function ServicesPage({ onNavigate }: ServicesPageProps) {
-  const { data: services = [], isLoading: loading, error } = useSalonServices();
+  const { data: services = [], isLoading: loading, error } = useFeaturedServices();
   const { data: dashboardContent, isLoading: isDashboardLoading } = useDashboardContent();
   const [selectedService, setSelectedService] = useState<number | null>(null);
+  const router = useRouter();
 
   const handleScheduleClick = () => {
     if (onNavigate) {
@@ -137,6 +139,15 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
               )}
             </div>
           ))}
+        </div>
+
+        <div className="text-center mt-8">
+            <button
+                onClick={() => router.push('/services')}
+                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+            >
+                Explore All Services
+            </button>
         </div>
 
         {/* Call to Action */}

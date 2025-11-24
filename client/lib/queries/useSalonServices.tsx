@@ -1,10 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchSalonServices } from "../api";
 
-export function useSalonServices() {
-  return useQuery({
-    queryKey: ["services"],
+export function useSalonServices(filters: { search?: string; category?: string; ordering?: string; }) {
+  return useInfiniteQuery({
+    queryKey: ["services", filters],
     queryFn: fetchSalonServices,
-    staleTime: 2 * 60 * 1000,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.next) {
+        const url = new URL(lastPage.next);
+        return url.searchParams.get("page") ? Number(url.searchParams.get("page")) : undefined;
+      }
+      return undefined;
+    },
   });
 }
